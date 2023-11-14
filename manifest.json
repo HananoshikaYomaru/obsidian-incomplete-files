@@ -1,9 +1,9 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "incomplete-files",
+	"name": "Incomplete files",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
+	"description": "Rule based keep track of your incomplete files",
 	"author": "HananoshikaYomaru",
 	"authorUrl": "https://yomaru.dev",
 	"fundingUrl": {

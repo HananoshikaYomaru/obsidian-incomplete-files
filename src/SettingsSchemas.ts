@@ -1,5 +1,7 @@
 import { z } from "zod";
 
 export const SettingSchema = z.object({
-	test: z.string().default("test"),
+	emptyContentHeading: z.boolean().default(true),
+	incompleteSyntax: z.boolean().default(true),
+	ignoreFoldersString: z.string().default(""),
 });

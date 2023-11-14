@@ -1,24 +1,14 @@
-## Obsidian Sample Plugin (Yomaru)
+## Obsidian Incomplete files
 
-- ✅ husky
-- ✅ bun
-- ✅ bun github release workflow
-- ✅ extended obsidian typescript api
+This plugin help discover your incomplete files base on given rules
 
-## How to start?
+## Features
 
-you can click the "use this template" button on Github. Or clone it yourself:
+1. rule based incomplete files detection
+2. show all incomplete files with reason
+3. incomplete files view: see all your incomplete files in a list
+   1. see last update time of this file
 
-1. git clone this project
-2. remove the remote origin: `git remote remove origin`
-3. remove the tag : `git tag -d <tag_name>`
+## Installation
 
-Then change the basic info in your plugin. Open your vault and you should see the info has been updated.
-
-### Prerequisite
-
-you need to install `bun` in your system to use this template.
-
-## How to release?
-
-run `bun release`
+## Give Thanks

@@ -5,42 +5,7 @@ import { createNotice } from "@/util/createNotice";
 import { State } from "@/util/State";
 import { Plugin } from "obsidian";
 import { z } from "zod";
-
-// the setting of slider
-export const nodeSize = {
-	min: 1,
-	max: 10,
-	step: 0.1,
-	default: 3,
-};
-
-// export type BaseFilterSettings = Prettify<
-// 	z.TypeOf<typeof BaseFilterSettingsSchema>
-// >;
-
-// export type LocalFilterSetting = Prettify<
-// 	z.TypeOf<typeof LocalFilterSettingSchema>
-// >;
-
-// export type GroupSettings = Prettify<z.TypeOf<typeof GroupSettingsSchema>>;
-
-// export type BaseDisplaySettings = Prettify<
-// 	z.TypeOf<typeof BaseDisplaySettingsSchema>
-// >;
-
-// export type LocalDisplaySettings = Prettify<
-// 	z.TypeOf<typeof LocalDisplaySettingsSchema>
-// >;
-
-// export type GlobalGraphSettings = Prettify<
-// 	z.TypeOf<typeof GlobalGraphSettingsSchema>
-// >;
-
-// export type LocalGraphSettings = Prettify<
-// 	z.TypeOf<typeof LocalGraphSettingsSchema>
-// >;
-
-// export type SavedSetting = Prettify<z.TypeOf<typeof SavedSettingSchema>>;
+import { parseFolders } from "./parseFolder";
 
 export type Setting = Prettify<z.TypeOf<typeof SettingSchema>>;
 
@@ -81,11 +46,14 @@ export class MySettingManager implements ISettingManager<Setting> {
 		// save the setting to json
 		this.asyncQueue.push(this.saveSettings.bind(this));
 		// return the updated setting
-		return this.setting.value;
+		return this.getSettings();
 	}
 
-	getSettings(): Setting {
-		return this.setting.value;
+	getSettings() {
+		return {
+			...this.setting.value,
+			ignoreFolders: parseFolders(this.setting.value.ignoreFoldersString),
+		};
 	}
 
 	/**
@@ -146,5 +114,7 @@ export class MySettingManager implements ISettingManager<Setting> {
 }
 
 export const DEFAULT_SETTING: Setting = {
-	test: "test",
+	emptyContentHeading: true,
+	incompleteSyntax: true,
+	ignoreFoldersString: "",
 };
