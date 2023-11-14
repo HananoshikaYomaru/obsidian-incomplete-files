@@ -1,5 +1,8 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import IncompleteFilesPlugin from "./main";
+import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
+import { CheckFunction } from "@/initIncompleteFiles";
+import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
 
 export class SettingTab extends PluginSettingTab {
 	plugin: IncompleteFilesPlugin;
@@ -7,6 +10,18 @@ export class SettingTab extends PluginSettingTab {
 	constructor(app: App, plugin: IncompleteFilesPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+	}
+
+	toggleCheckArray(func: CheckFunction, value: boolean) {
+		if (value) {
+			this.plugin.checkArray.push(func);
+		} else {
+			this.plugin.checkArray = this.plugin.checkArray.filter(
+				(checkFunction) => {
+					return checkFunction !== func;
+				}
+			);
+		}
 	}
 
 	display(): void {
@@ -28,6 +43,10 @@ export class SettingTab extends PluginSettingTab {
 					.onChange((value) => {
 						this.plugin.settingManager.updateSettings((setting) => {
 							setting.value.emptyContentHeading = value;
+							this.toggleCheckArray(
+								checkEmptyContentHeading,
+								value
+							);
 						});
 					});
 			});
@@ -46,6 +65,7 @@ export class SettingTab extends PluginSettingTab {
 					.onChange((value) => {
 						this.plugin.settingManager.updateSettings((setting) => {
 							setting.value.incompleteSyntax = value;
+							this.toggleCheckArray(checkIncompleteSyntax, value);
 						});
 					});
 			});

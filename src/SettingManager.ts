@@ -63,8 +63,6 @@ export class MySettingManager implements ISettingManager<Setting> {
 		// load the data, this can be null if the plugin is used for the first time
 		const loadedData = (await this.plugin.loadData()) as unknown | null;
 
-		console.log("loaded: ", loadedData);
-
 		// if the data is null, then we need to initialize the data
 		if (!loadedData) {
 			this.setting.value = DEFAULT_SETTING;
@@ -77,7 +75,7 @@ export class MySettingManager implements ISettingManager<Setting> {
 		// the data schema is wrong or the data is corrupted, then we need to initialize the data
 		if (!result.success) {
 			createNotice(corruptedMessage);
-			console.warn("parsed loaded data failed", result.error.flatten());
+			console.error("parsed loaded data failed", result.error.flatten());
 			this.isLoaded = false;
 			this.setting.value = DEFAULT_SETTING;
 			return this.setting.value;

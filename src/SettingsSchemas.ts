@@ -24,7 +24,7 @@ const fileSchema = z.object({
 	path: z.string(),
 	basename: z.string(),
 	reasons: incompleteReasonSchema.array(),
-	lastChecked: z.date(),
+	lastChecked: z.coerce.date(),
 });
 
 export type IncompleteFile = z.infer<typeof fileSchema>;
