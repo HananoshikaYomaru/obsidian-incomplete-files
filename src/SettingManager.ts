@@ -5,7 +5,7 @@ import { createNotice } from "@/util/createNotice";
 import { State } from "@/util/State";
 import { Plugin } from "obsidian";
 import { z } from "zod";
-import { parseFolders } from "./parseFolder";
+import { parseFolders } from "./util/parseFolder";
 
 export type Setting = Prettify<z.TypeOf<typeof SettingSchema>>;
 
@@ -117,4 +117,5 @@ export const DEFAULT_SETTING: Setting = {
 	emptyContentHeading: true,
 	incompleteSyntax: true,
 	ignoreFoldersString: "",
+	incompleteFiles: [],
 };
