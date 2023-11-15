@@ -56,20 +56,47 @@
 			.getLeaf(false)
 			.openFile(tfile as TFile, { active: true, eState });
 	}
+
+	let areSummariesExpanded = false;
+	let detailsStates = $incompleteFiles.map(() => false);
+
+	function toggleSummaries() {
+		areSummariesExpanded = !areSummariesExpanded;
+		detailsStates = detailsStates.map(() => areSummariesExpanded);
+	}
+
+	function updateDetailsState(
+		index: number,
+		event: Event<EventTarget> & {
+			currentTarget: EventTarget & HTMLDetailsElement;
+		}
+	) {
+		// @ts-ignore
+		detailsStates[index] = event.target?.open;
+		areSummariesExpanded = detailsStates.some((state) => state);
+	}
 </script>
 
 <div class="incomplete-files">
 	<!-- list of utils -->
 	<div class="incomplete-files-utils">
-		<button>
+		<button on:click={toggleSummaries}>
 			<!-- toggle collapse summary -->
-			<Icon name="chevrons-down-up" />
+			<Icon
+				name={areSummariesExpanded
+					? "chevrons-down-up"
+					: "chevrons-up-down"}
+			/>
 		</button>
 		<button> group by folder </button>
 		<button> group by tag </button>
 	</div>
-	{#each $incompleteFiles as file}
-		<details class="file-item">
+	{#each $incompleteFiles as file, index}
+		<details
+			class="file-item"
+			open={detailsStates[index]}
+			on:toggle={(event) => updateDetailsState(index, event)}
+		>
 			<summary>
 				<span class="file-text">
 					<strong>{file.basename}</strong> (Last checked: {formatDate(
