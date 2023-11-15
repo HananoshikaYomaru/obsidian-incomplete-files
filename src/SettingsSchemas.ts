@@ -1,6 +1,13 @@
 import { z } from "zod";
 import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
 
+const headingSchema = z.object({
+	depth: z.number().min(1).max(6),
+	text: z.string(),
+});
+
+export type Heading = z.infer<typeof headingSchema>;
+
 const incompleteReasonSchema = z.object({
 	type: z.nativeEnum(INCOMPLETE_REASON_TYPE),
 	/**
@@ -10,12 +17,7 @@ const incompleteReasonSchema = z.object({
 	/**
 	 * if the reason has corresponding a heading
 	 */
-	heading: z
-		.object({
-			depth: z.number().min(1).max(6),
-			text: z.string(),
-		})
-		.optional(),
+	heading: headingSchema.optional(),
 });
 
 export type IncompleteReason = z.infer<typeof incompleteReasonSchema>;

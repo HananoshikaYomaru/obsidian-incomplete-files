@@ -1,38 +1,138 @@
-<script>
-    // Assuming 'data' is passed into this component as a prop
-    export let data;
-  
-    // Helper function to format the date
-    function formatDate(dateString) {
-      const date = new Date(dateString);
-      return date.toLocaleDateString(); // Or any format you prefer
-    }
-  </script>
-  
-  <style>
-    .file-item {
-      margin-bottom: 1rem;
-      padding: 0.5rem;
-      border-bottom: 1px solid #ddd;
-    }
-  
-    .reason {
-      margin-left: 1rem;
-    }
-  </style>
-  
-  <div class="incomplete-files">
-    {#each data.incompleteFiles as file}
-      <div class="file-item">
-        <div class="file-title">
-          <strong>{file.basename}</strong> (Last checked: {formatDate(file.lastChecked)})
-        </div>
-        {#each file.reasons as reason}
-          <div class="reason">
-            - {reason.title}
-          </div>
-        {/each}
-      </div>
-    {/each}
-  </div>
-  
+<script lang="ts">
+	import type { Heading, IncompleteFile } from "@/SettingsSchemas";
+	import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
+	import { checkEmptyContent } from "@/rules/checkEmptyContent";
+	import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
+	import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
+	import Icon from "@/ui/icon.svelte";
+	import { incompleteFiles, plugin } from "@/ui/store";
+	import { type TFile } from "obsidian";
+
+	// Helper function to format the date
+	function formatDate(date: Date) {
+		// the formart of YYYY-MM-DD
+		return date.toISOString().split("T")[0];
+	}
+
+	function goToFile(file: IncompleteFile) {
+		// Use the Obsidian API to open the file
+		const tfile = $plugin.app.vault.getAbstractFileByPath(file.path);
+		if (tfile)
+			$plugin.app.workspace.getLeaf(false).openFile(tfile as TFile);
+	}
+
+	function goToHeading(file: IncompleteFile, heading: Heading) {
+		const tfile = $plugin.app.vault.getAbstractFileByPath(
+			file.path
+		) as TFile;
+
+		if (!tfile) return;
+		const cache = $plugin.app.metadataCache.getFileCache(tfile);
+		const targetHeading = cache?.headings?.find(
+			(h) => h.heading === heading.text
+		);
+
+		if (!targetHeading) return;
+
+		const {
+			start: { line, col },
+			end: endLoc,
+		} = targetHeading.position;
+
+		// construct the estate from,  heading.position.start and heading.position.end
+
+		const eState = {
+			active: true,
+			focus: true,
+			startLoc: { line, col },
+			endLoc,
+			line,
+			cursor: {
+				from: { line, ch: col },
+				to: { line, ch: col },
+			},
+		};
+		$plugin.app.workspace
+			.getLeaf(false)
+			.openFile(tfile as TFile, { active: true, eState });
+	}
+</script>
+
+<div class="incomplete-files">
+	{#each $incompleteFiles as file}
+		<details class="file-item">
+			<summary>
+				<span class="file-text">
+					<strong>{file.basename}</strong> (Last checked: {formatDate(
+						file.lastChecked
+					)})
+				</span>
+			</summary>
+			<ul class="incomplete-files-reason-list">
+				{#each file.reasons as reason}
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
+					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+					<li
+						class="incomplete-files-reason"
+						data-reason={reason.type}
+						data-reason-heading={reason.heading?.text}
+						data-reason-heading-depth={reason.heading?.depth}
+						on:click={(event) => {
+							if (reason.heading)
+								goToHeading(file, reason.heading);
+							else goToFile(file);
+						}}
+					>
+						{@html reason.type ===
+						INCOMPLETE_REASON_TYPE.EMPTY_CONTENT
+							? checkEmptyContent.icon
+							: reason.type ===
+							  INCOMPLETE_REASON_TYPE.EMPTY_CONTENT_HEADING
+							? checkEmptyContentHeading.icon
+							: checkIncompleteSyntax.icon}
+						{reason.title}
+					</li>
+				{/each}
+			</ul>
+		</details>
+	{/each}
+</div>
+
+<style>
+	.file-item {
+		margin-bottom: 1rem;
+		padding: 0.5rem;
+		border-bottom: 1px solid #ddd;
+	}
+
+	summary {
+		cursor: pointer;
+		flex-direction: row;
+	}
+	summary:hover {
+		color: var(--color-purple);
+	}
+	.incomplete-files-reason-list {
+		list-style: none;
+		padding-left: 0;
+	}
+	li.incomplete-files-reason {
+		cursor: pointer;
+		padding: 6px;
+		border-radius: 4px;
+	}
+	li.incomplete-files-reason:hover {
+		color: var(--color-purple);
+		/* bg a little bit dimmer */
+		background-color: rgba(0, 0, 0, 0.1);
+	}
+
+	.incomplete-files-reason {
+		display: flex;
+		align-items: start;
+		padding: 6px;
+		border-radius: 4px;
+		position: relative;
+	}
+</style>

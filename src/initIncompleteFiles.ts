@@ -5,6 +5,8 @@ import { getLastUpdateTime } from "@/util/getLastUpdateTime";
 import { analyseFile } from "@/analyseFile";
 
 export const initIncompleteFiles = async (plugin: IncompleteFilesPlugin) => {
+	if (plugin.lock) return;
+	plugin.lock = true;
 	// get all markdown files from the vault
 	const files = getAllMarkdownFiles(plugin);
 	const setting = plugin.settingManager.getSettings();
@@ -34,4 +36,5 @@ export const initIncompleteFiles = async (plugin: IncompleteFilesPlugin) => {
 	}
 
 	createNotice(`${setting.incompleteFiles.length} files are incomplete`);
+	plugin.lock = false;
 };

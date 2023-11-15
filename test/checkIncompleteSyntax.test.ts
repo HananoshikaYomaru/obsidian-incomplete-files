@@ -22,7 +22,7 @@ describe("checkIncompleteSyntax", () => {
 	test("should return empty array for a file with no content", () => {
 		const markdown = "";
 		const data = getDataFromTextSync(markdown);
-		const result = checkIncompleteSyntax(mockFile, data);
+		const result = checkIncompleteSyntax.func(mockFile, data);
 		expect(result).toEqual([]);
 	});
 
@@ -30,7 +30,7 @@ describe("checkIncompleteSyntax", () => {
 		const markdown =
 			"this is some content\n%% INCOMPLETE(no banner image) %% ";
 		const data = getDataFromTextSync(markdown);
-		const result = checkIncompleteSyntax(mockFile, data);
+		const result = checkIncompleteSyntax.func(mockFile, data);
 		expect(result.length).toBe(1);
 		expect(result[0]?.title).toBe(
 			"file is incomplete because no banner image"
@@ -41,7 +41,7 @@ describe("checkIncompleteSyntax", () => {
 		const markdown =
 			"# Heading 1\nContent here.\n%%   INCOMPLETE(not enough content) %%";
 		const data = getDataFromTextSync(markdown);
-		const result = checkIncompleteSyntax(mockFile, data);
+		const result = checkIncompleteSyntax.func(mockFile, data);
 		expect(result.length).toBe(1);
 		expect(result[0]?.title).toMatch(
 			/H1 Heading 1 is incomplete because not enough content/
@@ -62,7 +62,7 @@ Content here.
 %%   INCOMPLETE(not enough content) %%
 `;
 		const data = getDataFromTextSync(markdown);
-		const result = checkIncompleteSyntax(mockFile, data);
+		const result = checkIncompleteSyntax.func(mockFile, data);
 		expect(result.length).toBe(3);
 		expect(result[0]?.title).toMatch(
 			/H1 Heading 1 is incomplete because not enough content/

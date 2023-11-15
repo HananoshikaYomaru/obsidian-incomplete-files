@@ -2,6 +2,7 @@ import IncompleteFilesPlugin from "@/main";
 import { getDataFromFile } from "@/util/getDataFromFile";
 import { TFile } from "obsidian";
 import { getLastUpdateTime } from "@/util/getLastUpdateTime";
+import { incompleteFiles } from "@/ui/store";
 
 export const analyseFile = async (
 	plugin: IncompleteFilesPlugin,
@@ -15,7 +16,7 @@ export const analyseFile = async (
 	);
 
 	// write the incomplete file to data
-	plugin.settingManager.updateSettings((setting) => {
+	const newSetting = plugin.settingManager.updateSettings((setting) => {
 		// remove the files with this path
 		setting.value.incompleteFiles = setting.value.incompleteFiles.filter(
 			(f) => f.path !== file.path
@@ -31,4 +32,7 @@ export const analyseFile = async (
 				basename: file.basename,
 			});
 	});
+
+	// update the store
+	incompleteFiles.set(newSetting.incompleteFiles);
 };

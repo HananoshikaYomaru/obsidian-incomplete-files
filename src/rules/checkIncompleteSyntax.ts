@@ -1,21 +1,21 @@
 import { visit } from "unist-util-visit";
 import { type CheckFunction } from "@/constructCheckArray";
 import { type Data } from "@/util/getDataFromFile";
-import { TFile } from "obsidian";
+import { TFile, getIcon } from "obsidian";
 import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
 import { type IncompleteReason } from "@/SettingsSchemas";
 import type { Heading, Node, Text } from "mdast";
 import { nodeToString } from "@/util/nodeToString";
 
+const icon = getIcon("pen-tool")?.outerHTML;
+
 /**
  *  %% INCOMPLETE(reason which is a string) %%
+ * %% INCOMPLETE %%
  */
-const syntaxRegex = /%%\s*INCOMPLETE\(([^)]+)\)\s*%%/g;
+const syntaxRegex = /%%\s*INCOMPLETE(?:\(([^)]+)\))?\s*%%/g;
 
-export const checkIncompleteSyntax: CheckFunction = (
-	file: TFile,
-	data: Data
-) => {
+const func: CheckFunction = (file: TFile, data: Data) => {
 	// get the content of the file
 
 	// if the body is completely empty, return []
@@ -57,7 +57,7 @@ export const checkIncompleteSyntax: CheckFunction = (
 			const matches = (node as Text).value.matchAll(syntaxRegex);
 
 			for (const match of matches) {
-				const reason = match[1]; // Capture the incomplete reason
+				const reason = match[1] ?? "some reason"; // Capture the incomplete reason
 				const reasonTitle = currentHeading
 					? `H${currentHeading.depth} ${nodeToString(
 							currentHeading
@@ -79,4 +79,9 @@ export const checkIncompleteSyntax: CheckFunction = (
 	});
 
 	return incompleteReasons;
+};
+
+export const checkIncompleteSyntax = {
+	icon,
+	func,
 };

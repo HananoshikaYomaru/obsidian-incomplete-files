@@ -24,7 +24,7 @@ describe("checkEmptyContentHeading", () => {
 
 	test("should return no incomplete reasons when the body is completely empty", () => {
 		const data = getDataFromTextSync("");
-		const result = checkEmptyContentHeading(mockFile, data);
+		const result = checkEmptyContentHeading.func(mockFile, data);
 		expect(result).toEqual([]);
 	});
 
@@ -32,13 +32,13 @@ describe("checkEmptyContentHeading", () => {
 		const data = getDataFromTextSync(
 			"Some random text without any headings."
 		);
-		const result = checkEmptyContentHeading(mockFile, data);
+		const result = checkEmptyContentHeading.func(mockFile, data);
 		expect(result).toEqual([]);
 	});
 
 	test("should identify headings without content", () => {
 		const data = getDataFromTextSync("# Heading 1\n\n# Heading 2\n");
-		const result = checkEmptyContentHeading(mockFile, data);
+		const result = checkEmptyContentHeading.func(mockFile, data);
 		expect(result.length).toBe(2);
 		expect(result[0]?.title).toMatch(/Heading 1 is empty/);
 		expect(result[1]?.title).toMatch(/Heading 2 is empty/);
@@ -48,7 +48,7 @@ describe("checkEmptyContentHeading", () => {
 		const data = getDataFromTextSync(
 			"# Heading 1\nContent here.\n## Heading 2\nMore content."
 		);
-		const result = checkEmptyContentHeading(mockFile, data);
+		const result = checkEmptyContentHeading.func(mockFile, data);
 		expect(result).toEqual([]);
 	});
 
@@ -56,7 +56,7 @@ describe("checkEmptyContentHeading", () => {
 		const data = getDataFromTextSync(
 			"# Heading 1\n\n## Heading 2\n\n### Heading 3\n"
 		);
-		const result = checkEmptyContentHeading(mockFile, data);
+		const result = checkEmptyContentHeading.func(mockFile, data);
 		expect(result.length).toBe(1);
 		expect(result[0]?.title).toMatch(/Heading 3 is empty/);
 	});

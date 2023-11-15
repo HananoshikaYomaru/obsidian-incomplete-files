@@ -13,10 +13,11 @@ import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
 export type CheckFunction = (file: TFile, data: Data) => IncompleteReason[];
 
 export const constructCheckArray = (plugin: IncompleteFilesPlugin) => {
-	const checkArray: CheckFunction[] = [checkEmptyContent];
+	const checkArray: CheckFunction[] = [checkEmptyContent.func];
 	const setting = plugin.settingManager.getSettings();
 
-	if (setting.emptyContentHeading) checkArray.push(checkEmptyContentHeading);
-	if (setting.incompleteSyntax) checkArray.push(checkIncompleteSyntax);
+	if (setting.emptyContentHeading)
+		checkArray.push(checkEmptyContentHeading.func);
+	if (setting.incompleteSyntax) checkArray.push(checkIncompleteSyntax.func);
 	return checkArray;
 };

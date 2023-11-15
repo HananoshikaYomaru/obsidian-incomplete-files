@@ -30,3 +30,22 @@ If your plugin does not need CSS, delete this file.
 .setting-item.incomplete-files-settings-ignored-folders-setting {
 	align-items: flex-start;
 }
+
+.incomplete-files-reason > svg {
+	margin-top: 2px;
+	margin-right: 6px;
+	height: 16px;
+	width: 16px;
+}
+
+.incomplete-files-reason[data-reason="EMPTY_CONTENT"] svg {
+	stroke: var(--color-red);
+}
+
+.incomplete-files-reason[data-reason="EMPTY_CONTENT_HEADING"] svg {
+	stroke: var(--color-yellow);
+}
+
+.incomplete-files-reason[data-reason="INCOMPLETE_SYNTAX"] svg {
+	stroke: var(--color-orange);
+}

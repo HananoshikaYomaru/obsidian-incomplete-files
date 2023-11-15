@@ -44,7 +44,7 @@ export class SettingTab extends PluginSettingTab {
 						this.plugin.settingManager.updateSettings((setting) => {
 							setting.value.emptyContentHeading = value;
 							this.toggleCheckArray(
-								checkEmptyContentHeading,
+								checkEmptyContentHeading.func,
 								value
 							);
 						});
@@ -65,7 +65,10 @@ export class SettingTab extends PluginSettingTab {
 					.onChange((value) => {
 						this.plugin.settingManager.updateSettings((setting) => {
 							setting.value.incompleteSyntax = value;
-							this.toggleCheckArray(checkIncompleteSyntax, value);
+							this.toggleCheckArray(
+								checkIncompleteSyntax.func,
+								value
+							);
 						});
 					});
 			});
