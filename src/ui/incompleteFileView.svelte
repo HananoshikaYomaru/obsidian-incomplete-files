@@ -6,7 +6,7 @@
 	import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
 	import Icon from "@/ui/icon.svelte";
 	import { incompleteFiles, plugin } from "@/ui/store";
-	import { type TFile } from "obsidian";
+	import { getIcon, type TFile } from "obsidian";
 
 	// Helper function to format the date
 	function formatDate(date: Date) {
@@ -59,6 +59,15 @@
 </script>
 
 <div class="incomplete-files">
+	<!-- list of utils -->
+	<div class="incomplete-files-utils">
+		<button>
+			<!-- toggle collapse summary -->
+			<Icon name="chevrons-down-up" />
+		</button>
+		<button> group by folder </button>
+		<button> group by tag </button>
+	</div>
 	{#each $incompleteFiles as file}
 		<details class="file-item">
 			<summary>
@@ -134,5 +143,14 @@
 		padding: 6px;
 		border-radius: 4px;
 		position: relative;
+	}
+
+	.incomplete-files-utils {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 1rem;
+		position: sticky;
+		top: 0; /* Adjust this value as needed */
+		z-index: 1000; /* To ensure it stays above other content */
 	}
 </style>
