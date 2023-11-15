@@ -1,6 +1,6 @@
 import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
-import { CheckFunction } from "@/initIncompleteFiles";
-import { Data } from "@/util/getDataFromFile";
+import { type CheckFunction } from "@/constructCheckArray";
+import { type Data } from "@/util/getDataFromFile";
 import { TFile } from "obsidian";
 
 export const checkEmptyContent: CheckFunction = (file: TFile, data: Data) => {

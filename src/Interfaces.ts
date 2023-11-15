@@ -1,3 +1,5 @@
+import type { State } from "@/util/State";
+
 export interface ISettingManager<SettingType = unknown> {
 	/**
 	 * save settings
@@ -10,7 +12,7 @@ export interface ISettingManager<SettingType = unknown> {
 	 * @returns the updated settings
 	 */
 	updateSettings(
-		updateFunc: (setting: typeof this.setting) => void
+		updateFunc: (setting: State<SettingType>) => void
 	): SettingType;
 
 	/**

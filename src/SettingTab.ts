@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import IncompleteFilesPlugin from "./main";
 import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
-import { CheckFunction } from "@/initIncompleteFiles";
+import { CheckFunction } from "./constructCheckArray";
 import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
 
 export class SettingTab extends PluginSettingTab {

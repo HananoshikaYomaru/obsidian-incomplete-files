@@ -1,4 +1,4 @@
-import { ISettingManager } from "@/Interfaces";
+import { type ISettingManager } from "@/Interfaces";
 import { AsyncQueue } from "@/util/AsyncQueue";
 import { SettingSchema } from "@/SettingsSchemas";
 import { createNotice } from "@/util/createNotice";
@@ -38,9 +38,7 @@ export class MySettingManager implements ISettingManager<Setting> {
 	 * this function will update the setting and save it to the json file. But it is still a sync function.
 	 * You should always use this function to update setting
 	 */
-	updateSettings(
-		updateFunc: (setting: typeof this.setting) => void
-	): Setting {
+	updateSettings(updateFunc: (setting: State<Setting>) => void): Setting {
 		// update the setting first
 		updateFunc(this.setting);
 		// save the setting to json

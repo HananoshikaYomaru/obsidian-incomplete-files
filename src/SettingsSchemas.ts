@@ -12,7 +12,7 @@ const incompleteReasonSchema = z.object({
 	 */
 	heading: z
 		.object({
-			type: z.number().min(1).max(6),
+			depth: z.number().min(1).max(6),
 			text: z.string(),
 		})
 		.optional(),
@@ -24,6 +24,7 @@ const fileSchema = z.object({
 	path: z.string(),
 	basename: z.string(),
 	reasons: incompleteReasonSchema.array(),
+	tags: z.string().array(),
 	lastChecked: z.coerce.date(),
 });
 
