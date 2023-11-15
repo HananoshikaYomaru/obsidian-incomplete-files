@@ -63,6 +63,8 @@
 	let areSummariesExpanded = false;
 	let detailsStates: Record<string, boolean> = $incompleteFiles.reduce(
 		(acc, file) => {
+			const folderPath = file.path.split("/").slice(0, -1).join("/");
+			acc[folderPath] = false;
 			acc[file.path] = false;
 			return acc;
 		},
@@ -72,10 +74,10 @@
 	function toggleSummaries() {
 		areSummariesExpanded = !areSummariesExpanded;
 		// for each details element, toggle the open state to areSummariesExpanded
-		detailsStates = $incompleteFiles.reduce((acc, file) => {
-			acc[file.path] = areSummariesExpanded;
-			return acc;
-		}, {} as Record<string, boolean>);
+
+		Object.entries(detailsStates).forEach(([path, state]) => {
+			detailsStates[path] = areSummariesExpanded;
+		});
 	}
 
 	function updateDetailsState(
@@ -143,14 +145,18 @@
 
 	{#if groupByFolder}
 		{#each Object.entries(organizedFiles) as [folderPath, files]}
-			<details class="folder-group">
+			<details
+				class="folder-group"
+				open={detailsStates[folderPath]}
+				on:toggle={(event) => updateDetailsState(folderPath, event)}
+			>
 				<summary
 					>{folderPath.trim() === "" ? "Root" : folderPath}</summary
 				>
 				{#each files as file, index}
 					<details
 						class="file-item"
-						open={detailsStates[index]}
+						open={detailsStates[file.path]}
 						on:toggle={(event) =>
 							updateDetailsState(file.path, event)}
 					>
@@ -197,7 +203,7 @@
 		{#each $incompleteFiles as file, index}
 			<details
 				class="file-item"
-				open={detailsStates[index]}
+				open={detailsStates[file.path]}
 				on:toggle={(event) => updateDetailsState(file.path, event)}
 			>
 				<summary>
@@ -243,7 +249,7 @@
 	.file-item {
 		margin-bottom: 1rem;
 		padding: 0.5rem;
-		border-bottom: 1px solid #ddd;
+		border-bottom: 1px solid #161616;
 	}
 
 	summary {
@@ -256,6 +262,8 @@
 	.incomplete-files-reason-list {
 		list-style: none;
 		padding-left: 0;
+		margin-top: 6px;
+		margin-bottom: 6px;
 	}
 	li.incomplete-files-reason {
 		cursor: pointer;
@@ -283,5 +291,11 @@
 		position: sticky;
 		top: 0; /* Adjust this value as needed */
 		z-index: 1000; /* To ensure it stays above other content */
+	}
+
+	.folder-group > summary {
+		background-color: var(--background-secondary-alt);
+		padding: 6px;
+		border-radius: 6px;
 	}
 </style>

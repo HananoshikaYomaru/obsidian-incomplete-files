@@ -23,6 +23,10 @@ const incompleteReasonSchema = z.object({
 export type IncompleteReason = z.infer<typeof incompleteReasonSchema>;
 
 const fileSchema = z.object({
+	/**
+	 * the unique identifier of the file
+	 */
+	hash: z.string(),
 	path: z.string(),
 	basename: z.string(),
 	reasons: incompleteReasonSchema.array(),

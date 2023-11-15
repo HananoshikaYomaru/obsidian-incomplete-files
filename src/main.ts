@@ -10,6 +10,7 @@ import { checkEmptyContent } from "@/rules/checkEmptyContent";
 import { IncompleteFilesView, VIEW_TYPE } from "@/ui/incompleteFileView";
 import { State } from "@/util/State";
 import { deepCompare } from "@/util/deepCompare";
+import { getHashByFile } from "@/util/getFileByHash";
 
 type ResolvedLinkCache = Record<string, Record<string, number>>;
 
@@ -66,6 +67,14 @@ export default class IncompleteFilesPlugin extends Plugin {
 		);
 		this.eventRefs.push(modifyEventRef);
 		this.registerEvent(modifyEventRef);
+
+		const renameEventRef = this.app.vault.on(
+			// @ts-ignore
+			"rename",
+			this.onFileRename.bind(this)
+		);
+		this.eventRefs.push(renameEventRef);
+		this.registerEvent(renameEventRef);
 	}
 
 	/**
@@ -114,6 +123,28 @@ export default class IncompleteFilesPlugin extends Plugin {
 			// );
 		}
 	};
+
+	async onFileRename(file: TFile, oldPath: string) {
+		// old hash is always undefined
+		// const oldHash = getHashByFile(oldPath, this.app);
+		const newHash = getHashByFile(file.path, this.app);
+		if (!newHash) return;
+		// update the setting
+		this.settingManager.updateSettings((setting) => {
+			// find the file with old path
+
+			const index = setting.value.incompleteFiles.findIndex(
+				(file) => file.path === oldPath
+			);
+			if (index === -1) return;
+			// change the path and hash
+
+			setting.value.incompleteFiles[index]!.path = file.path;
+			setting.value.incompleteFiles[index]!.hash = newHash;
+		});
+		// re-analyse the file
+		this.onFileModified(file);
+	}
 
 	async onFileModified(file: TFile) {
 		await analyseFile(this, file);

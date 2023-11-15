@@ -3,6 +3,7 @@ import { getDataFromFile } from "@/util/getDataFromFile";
 import { TFile } from "obsidian";
 import { getLastUpdateTime } from "@/util/getLastUpdateTime";
 import { incompleteFiles } from "@/ui/store";
+import { getHashByFile } from "@/util/getFileByHash";
 
 export const analyseFile = async (
 	plugin: IncompleteFilesPlugin,
@@ -25,6 +26,7 @@ export const analyseFile = async (
 		if (incompleteReasons.length > 0)
 			// push a new entry
 			setting.value.incompleteFiles.push({
+				hash: getHashByFile(file.path, plugin.app)!,
 				path: file.path,
 				lastChecked: getLastUpdateTime(file),
 				tags: data.tags,
