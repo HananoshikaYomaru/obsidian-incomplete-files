@@ -1,12 +1,13 @@
 <script lang="ts">
 	import type { Heading, IncompleteFile } from "@/SettingsSchemas";
+	import { initIncompleteFiles } from "@/initIncompleteFiles";
 	import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
 	import { checkEmptyContent } from "@/rules/checkEmptyContent";
 	import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
 	import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
 	import Icon from "@/ui/icon.svelte";
 	import { incompleteFiles, plugin } from "@/ui/store";
-	import { getIcon, type TFile } from "obsidian";
+	import { type TFile } from "obsidian";
 
 	// Helper function to format the date
 	function formatDate(date: Date) {
@@ -16,7 +17,9 @@
 
 	function goToFile(file: IncompleteFile) {
 		// Use the Obsidian API to open the file
-		const tfile = $plugin.app.vault.getAbstractFileByPath(file.path);
+		const tfile = $plugin.app.vault.getAbstractFileByPath(
+			file.path
+		) as TFile;
 		if (tfile)
 			$plugin.app.workspace.getLeaf(false).openFile(tfile as TFile);
 	}
@@ -58,28 +61,75 @@
 	}
 
 	let areSummariesExpanded = false;
-	let detailsStates = $incompleteFiles.map(() => false);
+	let detailsStates: Record<string, boolean> = $incompleteFiles.reduce(
+		(acc, file) => {
+			acc[file.path] = false;
+			return acc;
+		},
+		{} as Record<string, boolean>
+	);
 
 	function toggleSummaries() {
 		areSummariesExpanded = !areSummariesExpanded;
-		detailsStates = detailsStates.map(() => areSummariesExpanded);
+		// for each details element, toggle the open state to areSummariesExpanded
+		detailsStates = $incompleteFiles.reduce((acc, file) => {
+			acc[file.path] = areSummariesExpanded;
+			return acc;
+		}, {} as Record<string, boolean>);
 	}
 
 	function updateDetailsState(
-		index: number,
+		path: string,
 		event: Event<EventTarget> & {
 			currentTarget: EventTarget & HTMLDetailsElement;
 		}
 	) {
 		// @ts-ignore
-		detailsStates[index] = event.target?.open;
-		areSummariesExpanded = detailsStates.some((state) => state);
+		detailsStates[path] = event.target?.open;
+		areSummariesExpanded = Object.values(detailsStates).some(
+			(state) => state
+		);
+	}
+
+	// Group by folder
+
+	let groupByFolder = false;
+	let organizedFiles: Record<string, IncompleteFile[]> = {};
+
+	function toggleGroupByFolder() {
+		groupByFolder = !groupByFolder;
+		organizeFiles();
+	}
+
+	function organizeFiles() {
+		if (groupByFolder) {
+			// Organize files by their folder paths
+			organizedFiles = $incompleteFiles.reduce((acc, file) => {
+				const folderPath = file
+					? file.path.split("/").slice(0, -1).join("/")
+					: "";
+				if (!acc[folderPath]) {
+					acc[folderPath] = [];
+				}
+				acc[folderPath]!.push(file);
+				return acc;
+			}, {} as Record<string, IncompleteFile[]>);
+		} else {
+			organizedFiles = {};
+		}
+	}
+
+	async function refresh() {
+		await initIncompleteFiles($plugin);
 	}
 </script>
 
 <div class="incomplete-files">
 	<!-- list of utils -->
 	<div class="incomplete-files-utils">
+		<button on:click={refresh}>
+			<Icon name="rotate-cw" />
+		</button>
 		<button on:click={toggleSummaries}>
 			<!-- toggle collapse summary -->
 			<Icon
@@ -88,51 +138,105 @@
 					: "chevrons-up-down"}
 			/>
 		</button>
-		<button> group by folder </button>
-		<button> group by tag </button>
+		<button on:click={toggleGroupByFolder}> group by folder </button>
 	</div>
-	{#each $incompleteFiles as file, index}
-		<details
-			class="file-item"
-			open={detailsStates[index]}
-			on:toggle={(event) => updateDetailsState(index, event)}
-		>
-			<summary>
-				<span class="file-text">
-					<strong>{file.basename}</strong> (Last checked: {formatDate(
-						file.lastChecked
-					)})
-				</span>
-			</summary>
-			<ul class="incomplete-files-reason-list">
-				{#each file.reasons as reason}
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
-					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-					<li
-						class="incomplete-files-reason"
-						data-reason={reason.type}
-						data-reason-heading={reason.heading?.text}
-						data-reason-heading-depth={reason.heading?.depth}
-						on:click={(event) => {
-							if (reason.heading)
-								goToHeading(file, reason.heading);
-							else goToFile(file);
-						}}
+
+	{#if groupByFolder}
+		{#each Object.entries(organizedFiles) as [folderPath, files]}
+			<details class="folder-group">
+				<summary
+					>{folderPath.trim() === "" ? "Root" : folderPath}</summary
+				>
+				{#each files as file, index}
+					<details
+						class="file-item"
+						open={detailsStates[index]}
+						on:toggle={(event) =>
+							updateDetailsState(file.path, event)}
 					>
-						{@html reason.type ===
-						INCOMPLETE_REASON_TYPE.EMPTY_CONTENT
-							? checkEmptyContent.icon
-							: reason.type ===
-							  INCOMPLETE_REASON_TYPE.EMPTY_CONTENT_HEADING
-							? checkEmptyContentHeading.icon
-							: checkIncompleteSyntax.icon}
-						{reason.title}
-					</li>
+						<summary>
+							<span class="file-text">
+								<strong>{file.basename}</strong> (Last checked: {formatDate(
+									file.lastChecked
+								)})
+							</span>
+						</summary>
+						<ul class="incomplete-files-reason-list">
+							{#each file.reasons as reason}
+								<!-- svelte-ignore a11y-click-events-have-key-events -->
+								<!-- svelte-ignore a11y-no-static-element-interactions -->
+								<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+								<li
+									class="incomplete-files-reason"
+									data-reason={reason.type}
+									data-reason-heading={reason.heading?.text}
+									data-reason-heading-depth={reason.heading
+										?.depth}
+									on:click={(event) => {
+										if (reason.heading)
+											goToHeading(file, reason.heading);
+										else goToFile(file);
+									}}
+								>
+									{@html reason.type ===
+									INCOMPLETE_REASON_TYPE.EMPTY_CONTENT
+										? checkEmptyContent.icon
+										: reason.type ===
+										  INCOMPLETE_REASON_TYPE.EMPTY_CONTENT_HEADING
+										? checkEmptyContentHeading.icon
+										: checkIncompleteSyntax.icon}
+									{reason.title}
+								</li>
+							{/each}
+						</ul>
+					</details>
 				{/each}
-			</ul>
-		</details>
-	{/each}
+			</details>
+		{/each}
+	{:else}
+		{#each $incompleteFiles as file, index}
+			<details
+				class="file-item"
+				open={detailsStates[index]}
+				on:toggle={(event) => updateDetailsState(file.path, event)}
+			>
+				<summary>
+					<span class="file-text">
+						<strong>{file.basename}</strong> (Last checked: {formatDate(
+							file.lastChecked
+						)})
+					</span>
+				</summary>
+				<ul class="incomplete-files-reason-list">
+					{#each file.reasons as reason}
+						<!-- svelte-ignore a11y-click-events-have-key-events -->
+						<!-- svelte-ignore a11y-no-static-element-interactions -->
+						<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+						<li
+							class="incomplete-files-reason"
+							data-reason={reason.type}
+							data-reason-heading={reason.heading?.text}
+							data-reason-heading-depth={reason.heading?.depth}
+							on:click={(event) => {
+								if (reason.heading)
+									goToHeading(file, reason.heading);
+								else goToFile(file);
+							}}
+						>
+							{@html reason.type ===
+							INCOMPLETE_REASON_TYPE.EMPTY_CONTENT
+								? checkEmptyContent.icon
+								: reason.type ===
+								  INCOMPLETE_REASON_TYPE.EMPTY_CONTENT_HEADING
+								? checkEmptyContentHeading.icon
+								: checkIncompleteSyntax.icon}
+							{reason.title}
+						</li>
+					{/each}
+				</ul>
+			</details>
+		{/each}
+	{/if}
 </div>
 
 <style>

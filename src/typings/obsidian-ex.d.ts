@@ -1764,7 +1764,9 @@ declare module "obsidian" {
 		 * Manages the gathering and updating of metadata for all files in the vault
 		 * @tutorial Use for finding tags and backlinks for specific files, grabbing frontmatter properties, ...
 		 */
-		metadataCache: EMetadataCache;
+		metadataCache: MetadataCache & {
+			fileCache: FileCache;
+		};
 		/**
 		 * Manages the frontmatter properties of the vault and the rendering of the properties
 		 * @tutorial Fetching properties used in all frontmatter fields, may potentially be used for adding custom frontmatter widgets
@@ -3404,9 +3406,7 @@ declare module "obsidian" {
 		/**
 		 * Get a clickable link - if it exists - at specified position
 		 */
-		getClickableTokenAt: (
-			pos: EditorPosition
-		) => {
+		getClickableTokenAt: (pos: EditorPosition) => {
 			start: EditorPosition;
 			end: EditorPosition;
 			text: string;

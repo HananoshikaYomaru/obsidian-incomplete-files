@@ -2,7 +2,7 @@ import { type EventRef, Plugin, TFile } from "obsidian";
 import "@total-typescript/ts-reset";
 import "@total-typescript/ts-reset/dom";
 import { MySettingManager } from "@/SettingManager";
-import { initIncompleteFiles } from "./initIncompleteFiles";
+import { initIncompleteFiles } from "@/initIncompleteFiles";
 import { analyseFile } from "./analyseFile";
 import { type CheckFunction, constructCheckArray } from "./constructCheckArray";
 import { SettingTab } from "@/SettingTab";
