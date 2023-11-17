@@ -1,7 +1,7 @@
 {
 	"id": "incomplete-files",
 	"name": "Incomplete files",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"minAppVersion": "0.15.0",
 	"description": "Rule based keep track of your incomplete files",
 	"author": "HananoshikaYomaru",

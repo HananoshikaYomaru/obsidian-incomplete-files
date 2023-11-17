@@ -1,6 +1,6 @@
 {
   "name": "obsidian-incomplete-files",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Rule based keep track of incomplete files in Obsidian",
   "main": "main.js",
   "scripts": {
