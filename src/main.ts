@@ -7,8 +7,10 @@ import { analyseFile } from "./analyseFile";
 import { type CheckFunction, constructCheckArray } from "./constructCheckArray";
 import { SettingTab } from "@/SettingTab";
 import { checkEmptyContent } from "@/rules/checkEmptyContent";
-import { IncompleteFilesView, VIEW_TYPE } from "@/ui/IncompleteFileView";
+import { IncompleteFilesView, VIEW_TYPE } from "@/IncompleteFileView";
 import { getHashByFile } from "@/util/getFileByHash";
+import { get } from "http";
+import { getAllMarkdownFiles } from "@/util/getAllMarkdownFiles";
 
 export default class IncompleteFilesPlugin extends Plugin {
 	lock: boolean = false;
@@ -29,17 +31,24 @@ export default class IncompleteFilesPlugin extends Plugin {
 
 		this.checkArray = constructCheckArray(this);
 
-		await initIncompleteFiles(this);
-
 		this.registerView(
 			VIEW_TYPE,
 			(leaf) => new IncompleteFilesView(leaf, this)
 		);
 
 		this.addCommand({
-			id: "open-example-view",
+			id: "open-incomplete-files-view",
 			name: "Open Incomplete Files View",
 			callback: () => this.activateView(),
+		});
+
+		this.addCommand({
+			// force re-analyse all files
+			id: "reanalyse-all",
+			name: "Reanalyse all files",
+			callback: async () => {
+				await initIncompleteFiles(this, true);
+			},
 		});
 
 		this.registerEvents();
@@ -107,7 +116,8 @@ export default class IncompleteFilesPlugin extends Plugin {
 			})
 		);
 
-		this.app.workspace.onLayoutReady(() => {
+		this.app.workspace.onLayoutReady(async () => {
+			await initIncompleteFiles(this);
 			this.registerEvent(
 				this.app.vault.on("create", (file) => {
 					this.newFiles.add(file as TFile);

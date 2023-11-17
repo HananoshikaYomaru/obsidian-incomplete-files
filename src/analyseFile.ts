@@ -2,7 +2,7 @@ import IncompleteFilesPlugin from "@/main";
 import { getDataFromFile } from "@/util/getDataFromFile";
 import { TFile } from "obsidian";
 import { getLastUpdateTime } from "@/util/getLastUpdateTime";
-import { incompleteFiles } from "@/ui/store";
+import { incompleteFiles } from "@/ui/helpers/store";
 import { getHashByFile } from "@/util/getFileByHash";
 
 export const analyseFile = async (

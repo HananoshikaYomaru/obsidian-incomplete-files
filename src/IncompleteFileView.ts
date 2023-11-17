@@ -2,7 +2,7 @@ import { ItemView, TFile, WorkspaceLeaf } from "obsidian";
 
 import Component from "@/ui/incompleteFileView.svelte";
 import type IncompleteFilesPlugin from "@/main";
-import { incompleteFiles, plugin } from "@/ui/store";
+import { incompleteFiles, plugin } from "@/ui/helpers/store";
 
 export const VIEW_TYPE = "incomplete-files-view";
 

@@ -55,6 +55,6 @@ export const initIncompleteFiles = async (
 			await analyseFile(plugin, file);
 		}
 	}
-	createNotice(`${setting.incompleteFiles.length} files are incomplete`);
+
 	plugin.lock = false;
 };
