@@ -1,8 +1,9 @@
 <script lang="ts">
+	import IconView from "@/ui/IconView.svelte";
 	import FileItem from "./FileItem.svelte";
 	import { type IncompleteFile } from "@/SettingsSchemas";
-	import { SORT_ORDER } from "@/ui/helpers/enums";
-	import { detailsStates, sortBy } from "@/ui/helpers/store";
+	import { DISPLAY_OPTION, SORT_ORDER } from "@/ui/helpers/enums";
+	import { detailsStates, sortBy, displayOption } from "@/ui/helpers/store";
 	import { updateDetailsState } from "@/ui/helpers/updateDetailsState";
 	export let folderPath: string;
 	export let files: IncompleteFile[];
@@ -27,12 +28,20 @@
 		</span>
 
 		<span id="count" class="tree-item-flair">
-			{files.length}
+			{$displayOption === DISPLAY_OPTION.FOLDER_LIST
+				? files.length
+				: sortedFiles.map((f) => f.reasons).flat().length}
 		</span>
 	</summary>
-	{#each sortedFiles as file, index}
-		<div class="nested-file-item">
-			<FileItem {file} />
+	{#if $displayOption === DISPLAY_OPTION.FOLDER_LIST}
+		{#each sortedFiles as file}
+			<div class="nested-item">
+				<FileItem {file} />
+			</div>
+		{/each}
+	{:else}
+		<div class="nested-item">
+			<IconView {sortedFiles} />
 		</div>
-	{/each}
+	{/if}
 </details>

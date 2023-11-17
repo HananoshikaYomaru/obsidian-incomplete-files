@@ -1,6 +1,9 @@
 import type { IncompleteFile, Heading } from "@/SettingsSchemas";
 import type { TFile } from "obsidian";
-import { plugin as _plugin, preventHighlight } from "@/ui/helpers/store";
+import {
+	plugin as _plugin,
+	isHighlightingBecauseClickingIssue,
+} from "@/ui/helpers/store";
 import { get } from "svelte/store";
 
 export function goToHeading(file: IncompleteFile, heading: Heading) {
@@ -33,7 +36,7 @@ export function goToHeading(file: IncompleteFile, heading: Heading) {
 			to: { line, ch: col },
 		},
 	};
-	preventHighlight.set(true);
+	isHighlightingBecauseClickingIssue.set(true);
 	plugin.app.workspace
 		.getLeaf(false)
 		.openFile(tfile as TFile, { active: true, eState });

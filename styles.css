@@ -153,9 +153,12 @@ li.incomplete-files-reason:hover {
 	z-index: -1; /* Ensure the line is behind your content */
 }
 
-.folder-group > .nested-file-item {
+.folder-group > .nested-item {
 	position: relative;
 	padding-left: 20px; // This padding will provide space for the vertical line
-
 	z-index: 1; /* Ensure your content is above the line */
+}
+
+.issue-icon svg {
+	margin-right: 0px;
 }

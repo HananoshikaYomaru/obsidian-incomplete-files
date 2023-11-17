@@ -7,6 +7,7 @@
 	import FolderGroup from "@/ui/FolderGroup.svelte";
 	import { getOrganizeFiles } from "@/ui/helpers/organiseFile";
 	import { scrollToElement as _scrollToElement } from "@/ui/helpers/scrollToElement";
+	import IconView from "@/ui/IconView.svelte";
 
 	export const scrollToElement = _scrollToElement;
 
@@ -35,9 +36,11 @@
 			([a], [b]) => a.localeCompare(b)) as [folderPath, files]}
 			<FolderGroup {folderPath} {files} />
 		{/each}
-	{:else}
-		{#each sortedFiles as file, index}
+	{:else if $displayOption === DISPLAY_OPTION.NONE_LIST}
+		{#each sortedFiles as file}
 			<FileItem {file} />
 		{/each}
+	{:else}
+		<IconView {sortedFiles} />
 	{/if}
 </div>

@@ -9,8 +9,9 @@ import { SettingTab } from "@/SettingTab";
 import { checkEmptyContent } from "@/rules/checkEmptyContent";
 import { IncompleteFilesView, VIEW_TYPE } from "@/IncompleteFileView";
 import { getHashByFile } from "@/util/getFileByHash";
-import { get } from "http";
-import { getAllMarkdownFiles } from "@/util/getAllMarkdownFiles";
+import { get } from "svelte/store";
+import { isHighlightingBecauseClickingIssue } from "@/ui/helpers/store";
+import { isFileInView } from "@/util/isElementInView";
 
 export default class IncompleteFilesPlugin extends Plugin {
 	lock: boolean = false;
@@ -63,7 +64,9 @@ export default class IncompleteFilesPlugin extends Plugin {
 				if (file) {
 					const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE);
 					const view = leaf[0]?.view as IncompleteFilesView;
-					view?.focus(file);
+
+					if (!get(isHighlightingBecauseClickingIssue))
+						view?.focus(file);
 				}
 			})
 		);
@@ -82,7 +85,13 @@ export default class IncompleteFilesPlugin extends Plugin {
 
 		this.registerEvent(
 			this.app.vault.on("modify", (file) => {
-				if (file instanceof TFile) analyseFile(this, file);
+				if (file instanceof TFile) {
+					analyseFile(this, file);
+					const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE);
+					const view = leaf[0]?.view as IncompleteFilesView;
+					// if the file is not in the incomplete files, focus it
+					if (!isFileInView(file.path)) view?.focus(file);
+				}
 			})
 		);
 

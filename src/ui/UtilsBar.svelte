@@ -18,14 +18,19 @@
 	function groupDropdownAction(node: HTMLElement) {
 		const dropdown = new DropdownComponent(node);
 
-		dropdown.addOption(DISPLAY_OPTION.NONE_LIST, "none-list");
-		dropdown.addOption(DISPLAY_OPTION.NONE_ICON, "none-icon");
+		dropdown.addOption(DISPLAY_OPTION.NONE_LIST, "list");
+		dropdown.addOption(DISPLAY_OPTION.NONE_ICON, "icon");
 		dropdown.addOption(DISPLAY_OPTION.FOLDER_LIST, "folder-list");
 		dropdown.addOption(DISPLAY_OPTION.FOLDER_ICON, "folder-icon");
 
 		dropdown.onChange((value) => {
 			// Handle dropdown value change
 			$displayOption = value as DISPLAY_OPTION;
+			$sortBy = SORT_ORDER.NAME;
+			// Reset sort order
+			listSortByDropdown.setValue(SORT_ORDER.NAME);
+			iconSortByDropdown.setValue(SORT_ORDER.NAME);
+			correctDropdown();
 		});
 
 		return {
@@ -35,16 +40,42 @@
 		};
 	}
 
-	function sortDropdownAction(node: HTMLElement) {
-		const dropdown = new DropdownComponent(node);
-		dropdown.addOption(SORT_ORDER.NAME, "sort by name");
-		dropdown.addOption(SORT_ORDER.TIME, "sort by time");
-		// ... more options ...
+	function correctDropdown() {
+		// if display option become icon, show icon sort dropdown and hide list sort dropdown
+		if (
+			$displayOption === DISPLAY_OPTION.NONE_ICON ||
+			$displayOption === DISPLAY_OPTION.FOLDER_ICON
+		) {
+			listSortByDropdown?.selectEl.hide();
+			iconSortByDropdown?.selectEl.show();
+		}
+		// if display option become list, show list sort dropdown and hide icon sort dropdown
+		else {
+			listSortByDropdown?.selectEl.show();
+			iconSortByDropdown?.selectEl.hide();
+		}
+	}
 
-		dropdown.onChange((value) => {
+	let listSortByDropdown: DropdownComponent;
+	let iconSortByDropdown: DropdownComponent;
+	function sortDropdownAction(node: HTMLElement) {
+		listSortByDropdown = new DropdownComponent(node);
+		listSortByDropdown.addOption(SORT_ORDER.NAME, "sort by name");
+		listSortByDropdown.addOption(SORT_ORDER.TIME, "sort by time");
+		listSortByDropdown.onChange((value) => {
 			// Handle dropdown value change
 			$sortBy = value as SORT_ORDER;
 		});
+
+		iconSortByDropdown = new DropdownComponent(node);
+		iconSortByDropdown.addOption(SORT_ORDER.NAME, "sort by name");
+		iconSortByDropdown.addOption(SORT_ORDER.ISSUE, "sort by issue");
+		iconSortByDropdown.onChange((value) => {
+			// Handle dropdown value change
+			$sortBy = value as SORT_ORDER;
+		});
+
+		correctDropdown();
 
 		return {
 			destroy() {

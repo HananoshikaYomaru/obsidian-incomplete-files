@@ -1,6 +1,7 @@
 export enum SORT_ORDER {
 	NAME = "name",
 	TIME = "time",
+	ISSUE = "issue",
 }
 
 export enum DISPLAY_OPTION {
