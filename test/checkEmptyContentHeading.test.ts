@@ -1,6 +1,6 @@
 import { describe, test, expect, vi } from "vitest";
 import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
-import { TFile } from "obsidian";
+import type { TFile } from "obsidian";
 import { getDataFromTextSync } from "@/util/getDataFromFile";
 
 // Vitest mock setup for parseYaml from Obsidian
