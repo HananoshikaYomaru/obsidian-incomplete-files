@@ -3,7 +3,7 @@ import { writeFileSync, readFileSync } from "node:fs";
 const typeOnlyModules = ["obsidian"];
 
 for (const module of typeOnlyModules) {
-	writeFileSync(`./node_modules/${module}/index.mjs`, "export default {}");
+	writeFileSync(`./node_modules/${module}/index.mjs`, `export default {}`);
 
 	const packagejson = JSON.parse(
 		readFileSync(`./node_modules/${module}/package.json`)

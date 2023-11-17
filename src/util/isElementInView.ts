@@ -1,5 +1,3 @@
-import { isHighlightingBecauseClickingIssue } from "@/ui/helpers/store";
-
 export function isElementInView(element: HTMLElement, container: HTMLElement) {
 	const elementRect = element.getBoundingClientRect();
 	const containerRect = container.getBoundingClientRect();

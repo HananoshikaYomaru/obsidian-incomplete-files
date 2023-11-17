@@ -1,8 +1,8 @@
 import IncompleteFilesPlugin from "@/main";
-import { type Data } from "@/util/getDataFromFile";
+import type {Data} from "@/util/getDataFromFile";
 import { checkEmptyContent } from "@/rules/checkEmptyContent";
-import { TFile } from "obsidian";
-import { type IncompleteReason } from "@/SettingsSchemas";
+import type {TFile} from "obsidian";
+import type {IncompleteReason} from "@/SettingsSchemas";
 import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
 import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
 

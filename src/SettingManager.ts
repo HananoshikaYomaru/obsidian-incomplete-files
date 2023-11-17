@@ -1,4 +1,4 @@
-import { type ISettingManager } from "@/Interfaces";
+import type {ISettingManager} from "@/Interfaces";
 import { AsyncQueue } from "@/util/AsyncQueue";
 import { SettingSchema } from "@/SettingsSchemas";
 import { createNotice } from "@/util/createNotice";

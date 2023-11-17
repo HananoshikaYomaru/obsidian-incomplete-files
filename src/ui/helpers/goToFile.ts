@@ -1,8 +1,7 @@
 import type { IncompleteFile } from "@/SettingsSchemas";
 
-import { isHighlightingBecauseClickingIssue } from "@/ui/helpers/store";
+import { isHighlightingBecauseClickingIssue , plugin as _plugin } from "@/ui/helpers/store";
 import type { TFile } from "obsidian";
-import { plugin as _plugin } from "@/ui/helpers/store";
 import { get } from "svelte/store";
 
 export function goToFile(file: IncompleteFile) {

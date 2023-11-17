@@ -1,6 +1,5 @@
 import { getAllMarkdownFiles } from "@/util/getAllMarkdownFiles";
 import IncompleteFilesPlugin from "@/main";
-import { createNotice } from "@/util/createNotice";
 import { getLastUpdateTime } from "@/util/getLastUpdateTime";
 import { analyseFile } from "@/analyseFile";
 

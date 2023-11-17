@@ -18,7 +18,8 @@ export const getDataFromTextSync = (text: string) => {
 	const { body } = splitYamlAndBody(text);
 
 	const yamlObj = yamlText
-		? (parseYaml(yamlText) as { [x: string]: any })
+		? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+		  (parseYaml(yamlText) as { [x: string]: any })
 		: null;
 
 	// get the tags from the yaml

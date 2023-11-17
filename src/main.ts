@@ -1,10 +1,12 @@
-import { type EventRef, Plugin, TFile, TAbstractFile } from "obsidian";
+import {  Plugin, TFile, TAbstractFile } from "obsidian";
+import type {EventRef} from "obsidian";
 import "@total-typescript/ts-reset";
 import "@total-typescript/ts-reset/dom";
 import { MySettingManager } from "@/SettingManager";
 import { initIncompleteFiles } from "@/initIncompleteFiles";
 import { analyseFile } from "./analyseFile";
-import { type CheckFunction, constructCheckArray } from "./constructCheckArray";
+import {  constructCheckArray } from "./constructCheckArray";
+import type {CheckFunction} from "./constructCheckArray";
 import { SettingTab } from "@/SettingTab";
 import { checkEmptyContent } from "@/rules/checkEmptyContent";
 import { IncompleteFilesView, VIEW_TYPE } from "@/IncompleteFileView";

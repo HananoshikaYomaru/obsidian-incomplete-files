@@ -1,9 +1,9 @@
 import { visit } from "unist-util-visit";
-import { type CheckFunction } from "@/constructCheckArray";
-import { type Data } from "@/util/getDataFromFile";
-import { TFile, getIcon } from "obsidian";
+import type { CheckFunction } from "@/constructCheckArray";
+import type {Data} from "@/util/getDataFromFile";
+import { TFile } from "obsidian";
 import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
-import { type IncompleteReason } from "@/SettingsSchemas";
+import type {IncompleteReason} from "@/SettingsSchemas";
 import type { Heading, Node, Text } from "mdast";
 import { nodeToString } from "@/util/nodeToString";
 
@@ -46,7 +46,7 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 		return [];
 	}
 
-	let incompleteReasons: IncompleteReason[] = [];
+	const incompleteReasons: IncompleteReason[] = [];
 	// @ts-ignore
 	let currentHeading: Heading = null;
 
@@ -60,6 +60,7 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 				const reason = match[1] ?? "some reason"; // Capture the incomplete reason
 				const reasonTitle = currentHeading
 					? `H${currentHeading.depth} ${nodeToString(
+							// @ts-ignore
 							currentHeading
 					  )} is incomplete because ${reason}`
 					: `file is incomplete because ${reason}`;
@@ -70,6 +71,7 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 					heading: currentHeading
 						? {
 								depth: currentHeading.depth,
+								// @ts-ignore
 								text: nodeToString(currentHeading),
 						  }
 						: undefined,

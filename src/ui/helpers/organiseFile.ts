@@ -1,9 +1,6 @@
 import type { IncompleteFile } from "@/SettingsSchemas";
 import { DISPLAY_OPTION } from "@/ui/helpers/enums";
-import {
-	incompleteFiles as _incompleteFiles,
-	displayOption as _displayOption,
-} from "@/ui/helpers/store";
+import { incompleteFiles as _incompleteFiles } from "@/ui/helpers/store";
 import { get } from "svelte/store";
 
 export function getOrganizeFiles(
