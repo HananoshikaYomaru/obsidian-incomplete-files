@@ -1,4 +1,4 @@
-import type {ISettingManager} from "@/Interfaces";
+import type { ISettingManager } from "@/Interfaces";
 import { AsyncQueue } from "@/util/AsyncQueue";
 import { SettingSchema } from "@/SettingsSchemas";
 import { createNotice } from "@/util/createNotice";
@@ -114,4 +114,5 @@ export const DEFAULT_SETTING: Setting = {
 	incompleteSyntax: true,
 	ignoreFoldersString: "",
 	incompleteFiles: [],
+	completeProperty: "",
 };

@@ -11,6 +11,38 @@ export const analyseFile = async (
 ) => {
 	const data = await getDataFromFile(plugin, file);
 
+	// e.g. given a yaml line,  status: complete
+
+	// first check if the line is a valid property key and value pair
+	// if yes parse the complete property to get the key and value
+	// then if data.yamlObj has this key and value, then the file is marked to be complete
+	// and we don't need to check it anymore and simply return
+
+	const completeProperty =
+		plugin.settingManager.getSettings().completeProperty;
+	const [propertyKey, expectedValue] = completeProperty
+		.split(":")
+		.map((s) => s.trim());
+
+	if (propertyKey && expectedValue && data.yamlObj) {
+		const propertyValue = data.yamlObj[propertyKey];
+		if (propertyValue === expectedValue) {
+			// remove the file from incomplete files
+			const newSetting = plugin.settingManager.updateSettings(
+				(setting) => {
+					// remove the files with this path
+					setting.value.incompleteFiles =
+						setting.value.incompleteFiles.filter(
+							(f) => f.path !== file.path
+						);
+				}
+			);
+
+			// update the store
+			incompleteFiles.set(newSetting.incompleteFiles);
+			return;
+		}
+	}
 	// for each check function, check if the file is incomplete
 	const issues = plugin.checkArray.flatMap((checkFunction) =>
 		checkFunction(file, data)

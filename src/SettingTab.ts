@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import IncompleteFilesPlugin from "./main";
 import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
-import type {CheckFunction} from "./constructCheckArray";
+import type { CheckFunction } from "./constructCheckArray";
 import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
 
 export class SettingTab extends PluginSettingTab {
@@ -71,6 +71,21 @@ export class SettingTab extends PluginSettingTab {
 							);
 						});
 					});
+			});
+
+		new Setting(containerEl)
+			.setName("Complete property")
+			.setDesc(
+				"The properties to mark a file as complete. e.g. 'complete: true' or 'status: complete'"
+			)
+			.addText((text) => {
+				text.setValue(
+					this.plugin.settingManager.getSettings().completeProperty
+				).onChange((value) => {
+					this.plugin.settingManager.updateSettings((setting) => {
+						setting.value.completeProperty = value;
+					});
+				});
 			});
 
 		const ignoredFoldersSetting = new Setting(containerEl)

@@ -41,4 +41,5 @@ export const SettingSchema = z.object({
 	incompleteSyntax: z.boolean().default(true),
 	ignoreFoldersString: z.string().default(""),
 	incompleteFiles: fileSchema.array().default([]),
+	completeProperty: z.string().default(""),
 });
