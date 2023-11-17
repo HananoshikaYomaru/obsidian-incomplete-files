@@ -32,10 +32,11 @@ If your plugin does not need CSS, delete this file.
 }
 
 .incomplete-files-reason > svg {
-	margin-top: 2px;
 	margin-right: 6px;
 	height: 16px;
 	width: 16px;
+	min-width: 16px;
+	min-height: 16px;
 }
 
 .incomplete-files-reason[data-reason="EMPTY_CONTENT"] svg {

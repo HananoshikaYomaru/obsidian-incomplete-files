@@ -37,4 +37,13 @@ export const analyseFile = async (
 
 	// update the store
 	incompleteFiles.set(newSetting.incompleteFiles);
+	// update the status bar item
+	const statusBarItem = document.querySelector(
+		".status-bar-item.plugin-incomplete-files"
+	) as HTMLDivElement | null;
+	if (statusBarItem) {
+		statusBarItem.setText(
+			`${newSetting.incompleteFiles.length} incomplete files`
+		);
+	}
 };

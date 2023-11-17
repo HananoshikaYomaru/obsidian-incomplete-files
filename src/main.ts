@@ -1,4 +1,4 @@
-import { type EventRef, Plugin, TFile } from "obsidian";
+import { type EventRef, Plugin, TFile, TAbstractFile } from "obsidian";
 import "@total-typescript/ts-reset";
 import "@total-typescript/ts-reset/dom";
 import { MySettingManager } from "@/SettingManager";
@@ -7,26 +7,17 @@ import { analyseFile } from "./analyseFile";
 import { type CheckFunction, constructCheckArray } from "./constructCheckArray";
 import { SettingTab } from "@/SettingTab";
 import { checkEmptyContent } from "@/rules/checkEmptyContent";
-import { IncompleteFilesView, VIEW_TYPE } from "@/ui/incompleteFileView";
-import { State } from "@/util/State";
-import { deepCompare } from "@/util/deepCompare";
+import { IncompleteFilesView, VIEW_TYPE } from "@/ui/IncompleteFileView";
 import { getHashByFile } from "@/util/getFileByHash";
 
-type ResolvedLinkCache = Record<string, Record<string, number>>;
-
 export default class IncompleteFilesPlugin extends Plugin {
-	// @ts-ignore
-	_resolvedCache: ResolvedLinkCache;
-	public readonly cacheIsReady: State<boolean> = new State(
-		this.app.metadataCache.resolvedLinks !== undefined
-	);
-	private isCacheReadyOnce = false;
 	lock: boolean = false;
 
 	// @ts-ignore
 	settingManager: MySettingManager;
 	private eventRefs: EventRef[] = [];
 	checkArray: CheckFunction[] = [checkEmptyContent.func];
+	newFiles = new Set<TFile>();
 
 	async onload() {
 		// initialize the setting manager
@@ -40,14 +31,6 @@ export default class IncompleteFilesPlugin extends Plugin {
 
 		await initIncompleteFiles(this);
 
-		this.cacheIsReady.value =
-			this.app.metadataCache.resolvedLinks !== undefined;
-
-		// all files are resolved, so the cache is ready:
-		this.app.metadataCache.on("resolved", this.onGraphCacheReady);
-		// the cache changed:
-		this.app.metadataCache.on("resolve", this.onGraphCacheChanged);
-
 		this.registerView(
 			VIEW_TYPE,
 			(leaf) => new IncompleteFilesView(leaf, this)
@@ -59,95 +42,93 @@ export default class IncompleteFilesPlugin extends Plugin {
 			callback: () => this.activateView(),
 		});
 
-		// register modify event , when the file is modified, we need to check if it is incomplete
-		const modifyEventRef = this.app.vault.on(
-			// @ts-ignore
-			"modify",
-			this.onFileModified.bind(this)
-		);
-		this.eventRefs.push(modifyEventRef);
-		this.registerEvent(modifyEventRef);
+		this.registerEvents();
 
-		const renameEventRef = this.app.vault.on(
-			// @ts-ignore
-			"rename",
-			this.onFileRename.bind(this)
-		);
-		this.eventRefs.push(renameEventRef);
-		this.registerEvent(renameEventRef);
+		const statusBarEl = this.addStatusBarItem();
+		statusBarEl.createEl("span", { text: `0 incomplete file` });
 	}
 
-	/**
-	 * this will be called the when the cache is ready.
-	 * And this will hit the else clause of the `onGraphCacheChanged` function
-	 */
-	private onGraphCacheReady = () => {
-		// console.log("Graph cache is ready");
-		this.cacheIsReady.value = true;
-		this.onGraphCacheChanged();
-	};
+	registerEvents() {
+		this.registerEvent(
+			this.app.workspace.on("file-open", (file) => {
+				if (file) {
+					const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE);
+					const view = leaf[0]?.view as IncompleteFilesView;
+					view?.focus(file);
+				}
+			})
+		);
 
-	/**
-	 * check if the cache is ready and if it is, update the global graph
-	 */
-	public onGraphCacheChanged = () => {
-		// check if the cache actually updated
-		// Obsidian API sends a lot of (for this plugin) unnecessary stuff
-		// with the resolve event
-		if (
-			this.cacheIsReady.value &&
-			!deepCompare(
-				this._resolvedCache,
-				this.app.metadataCache.resolvedLinks
+		// all files are resolved, so the cache is ready:
+		this.registerEvent(
+			this.app.metadataCache.on("resolved", () => {
+				if (this.newFiles.size > 0) {
+					for (const file of this.newFiles) {
+						analyseFile(this, file);
+					}
+					this.newFiles.clear();
+				}
+			})
+		);
+
+		this.registerEvent(
+			this.app.vault.on("modify", (file) => {
+				if (file instanceof TFile) analyseFile(this, file);
+			})
+		);
+
+		this.registerEvent(
+			this.app.vault.on(
+				"rename",
+				async (file: TAbstractFile, oldPath: string) => {
+					if (!(file instanceof TFile)) return;
+					// old hash is always undefined
+					// const oldHash = getHashByFile(oldPath, this.app);
+					const newHash = getHashByFile(file.path, this.app);
+					if (!newHash) return;
+					// remove the file from the setting.incompleteFiles using the old path
+					this.settingManager.updateSettings((setting) => {
+						setting.value.incompleteFiles =
+							setting.value.incompleteFiles.filter(
+								(f) => f.path !== oldPath
+							);
+					});
+
+					// re-analyse the file
+					await analyseFile(this, file);
+				}
 			)
-		) {
-			this._resolvedCache = structuredClone(
-				this.app.metadataCache.resolvedLinks
-			);
+		);
 
-			if (!this.isCacheReadyOnce) {
-				// init incomplete files
+		this.registerEvent(
+			this.app.vault.on("config-changed", () => {
+				// re-analyse all the files
 				initIncompleteFiles(this);
-			}
-		} else {
-			// init incomplete files
-			if (!this.isCacheReadyOnce) {
-				initIncompleteFiles(this);
-				this.isCacheReadyOnce = true;
-			}
-			// console.log(
-			//   "changed but ",
-			//   this.cacheIsReady.value,
-			//   " and ",
-			//   deepCompare(this._resolvedCache, this.app.metadataCache.resolvedLinks)
-			// );
-		}
-	};
+			})
+		);
 
-	async onFileRename(file: TFile, oldPath: string) {
-		// old hash is always undefined
-		// const oldHash = getHashByFile(oldPath, this.app);
-		const newHash = getHashByFile(file.path, this.app);
-		if (!newHash) return;
-		// update the setting
-		this.settingManager.updateSettings((setting) => {
-			// find the file with old path
-
-			const index = setting.value.incompleteFiles.findIndex(
-				(file) => file.path === oldPath
+		this.app.workspace.onLayoutReady(() => {
+			this.registerEvent(
+				this.app.vault.on("create", (file) => {
+					this.newFiles.add(file as TFile);
+				})
 			);
-			if (index === -1) return;
-			// change the path and hash
-
-			setting.value.incompleteFiles[index]!.path = file.path;
-			setting.value.incompleteFiles[index]!.hash = newHash;
 		});
-		// re-analyse the file
-		this.onFileModified(file);
-	}
 
-	async onFileModified(file: TFile) {
-		await analyseFile(this, file);
+		this.registerEvent(
+			this.app.vault.on("delete", (file) => {
+				// get the hash of the file
+				const hash = getHashByFile(file.path, this.app);
+				if (!hash) return;
+				// remove the file from the setting.incompleteFiles
+				this.settingManager.updateSettings((setting) => {
+					setting.value.incompleteFiles =
+						setting.value.incompleteFiles.filter(
+							(f) => f.hash !== hash
+						);
+				});
+			})
+		);
 	}
 
 	activateView() {

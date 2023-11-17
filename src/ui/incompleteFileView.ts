@@ -1,6 +1,6 @@
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import { ItemView, TFile, WorkspaceLeaf } from "obsidian";
 
-import Component from "./incompleteFileView.svelte";
+import Component from "@/ui/incompleteFileView.svelte";
 import type IncompleteFilesPlugin from "@/main";
 import { incompleteFiles, plugin } from "@/ui/store";
 
@@ -29,14 +29,10 @@ export class IncompleteFilesView extends ItemView {
 	}
 
 	async onOpen() {
-		console.log("onOpen");
 		// initialize the store
 		this.component = new Component({
 			target: this.contentEl,
-			props: {
-				// incompleteFiles:
-				// 	this.plugin.settingManager.getSettings().incompleteFiles,
-			},
+			props: {},
 		});
 		plugin.set(this.plugin);
 		incompleteFiles.set(
@@ -46,5 +42,12 @@ export class IncompleteFilesView extends ItemView {
 
 	async onClose() {
 		this.component.$destroy();
+	}
+
+	/**
+	 * scroll to that file
+	 */
+	focus(file: TFile) {
+		this.component.scrollToElement(file.path);
 	}
 }
