@@ -25,7 +25,7 @@ export const analyseFile = async (
 		.map((s) => s.trim());
 
 	if (propertyKey && expectedValue && data.yamlObj) {
-		const propertyValue = data.yamlObj[propertyKey];
+		const propertyValue = String(data.yamlObj[propertyKey]);
 		if (propertyValue === expectedValue) {
 			// remove the file from incomplete files
 			const newSetting = plugin.settingManager.updateSettings(
