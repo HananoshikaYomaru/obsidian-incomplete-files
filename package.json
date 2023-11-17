@@ -1,52 +1,52 @@
 {
-	"name": "obsidian-incomplete-files",
-	"version": "1.0.8",
-	"description": "Rule based keep track of incomplete files in Obsidian",
-	"main": "main.js",
-	"scripts": {
-		"dev": "bun esbuild.config.mjs",
-		"build": "bun esbuild.config.mjs production",
-		"version": "bun version-bump.mjs && git add manifest.json versions.json",
-		"lint": "eslint . --ext .ts --fix",
-		"typecheck": "tsc -noEmit -skipLibCheck",
-		"prepare": "husky install",
-		"release": "bash ./release.sh",
-		"test": "bun prepare-vitest.js && vitest"
-	},
-	"keywords": [
-		"obsidian",
-		"plugin",
-		"incomplete-files"
-	],
-	"author": "HananoshikaYomaru",
-	"license": "MIT",
-	"devDependencies": {
-		"@total-typescript/ts-reset": "^0.5.1",
-		"@types/js-yaml": "^4.0.9",
-		"@types/node": "^20.9.0",
-		"@typescript-eslint/eslint-plugin": "^6.7.0",
-		"@typescript-eslint/parser": "^6.7.0",
-		"builtin-modules": "3.3.0",
-		"bun-types": "^1.0.5-canary.20231009T140142",
-		"esbuild": "0.17.3",
-		"eslint-plugin-import": "^2.29.0",
-		"husky": "^8.0.3",
-		"obsidian": "latest",
-		"tslib": "2.6.2",
-		"typescript": "5.2.2",
-		"vite-tsconfig-paths": "^4.2.1",
-		"vitest": "^0.34.6"
-	},
-	"dependencies": {
-		"@tsconfig/svelte": "^5.0.2",
-		"esbuild-svelte": "^0.8.0",
-		"js-yaml": "^4.1.0",
-		"observable-slim": "^0.1.6",
-		"remark-parse": "^11.0.0",
-		"svelte": "^4.2.3",
-		"svelte-preprocess": "^5.1.0",
-		"unified": "^11.0.4",
-		"unist-util-visit": "^5.0.0",
-		"zod": "^3.22.4"
-	}
+  "name": "obsidian-incomplete-files",
+  "version": "1.0.9",
+  "description": "Rule based keep track of incomplete files in Obsidian",
+  "main": "main.js",
+  "scripts": {
+    "dev": "bun esbuild.config.mjs",
+    "build": "bun esbuild.config.mjs production",
+    "version": "bun version-bump.mjs && git add manifest.json versions.json",
+    "lint": "eslint . --ext .ts --fix",
+    "typecheck": "tsc -noEmit -skipLibCheck",
+    "prepare": "husky install",
+    "release": "bash ./release.sh",
+    "test": "bun prepare-vitest.js && vitest"
+  },
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "incomplete-files"
+  ],
+  "author": "HananoshikaYomaru",
+  "license": "MIT",
+  "devDependencies": {
+    "@total-typescript/ts-reset": "^0.5.1",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.9.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "builtin-modules": "3.3.0",
+    "bun-types": "^1.0.5-canary.20231009T140142",
+    "esbuild": "0.17.3",
+    "eslint-plugin-import": "^2.29.0",
+    "husky": "^8.0.3",
+    "obsidian": "latest",
+    "tslib": "2.6.2",
+    "typescript": "5.2.2",
+    "vite-tsconfig-paths": "^4.2.1",
+    "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "@tsconfig/svelte": "^5.0.2",
+    "esbuild-svelte": "^0.8.0",
+    "js-yaml": "^4.1.0",
+    "observable-slim": "^0.1.6",
+    "remark-parse": "^11.0.0",
+    "svelte": "^4.2.3",
+    "svelte-preprocess": "^5.1.0",
+    "unified": "^11.0.4",
+    "unist-util-visit": "^5.0.0",
+    "zod": "^3.22.4"
+  }
 }
