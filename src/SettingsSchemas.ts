@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { INCOMPLETE_ISSUE_TYPE } from "@/rules/issueScanners";
+import { INCOMPLETE_ISSUE_TYPE } from "./rules/INCOMPLETE_ISSUE_TYPE";
 
 const headingSchema = z.object({
 	depth: z.number().min(1).max(6),

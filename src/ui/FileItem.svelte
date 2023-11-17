@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formatDate } from "@/util/formatDate";
 	import type { IncompleteFile } from "@/SettingsSchemas";
-	import { INCOMPLETE_ISSUE_TYPE } from "@/rules/issueScanners";
+	import { INCOMPLETE_ISSUE_TYPE } from "@/rules/INCOMPLETE_ISSUE_TYPE";
 	import { checkEmptyContent } from "@/rules/checkEmptyContent";
 	import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
 	import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";

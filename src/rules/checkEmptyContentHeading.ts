@@ -1,5 +1,5 @@
 import { visit } from "unist-util-visit";
-import { INCOMPLETE_ISSUE_TYPE } from "@/rules/issueScanners";
+import { INCOMPLETE_ISSUE_TYPE } from "./INCOMPLETE_ISSUE_TYPE";
 import type { IssueScanner } from "@/rules/issueScanners";
 import type { Data } from "@/util/getDataFromFile";
 import type { TFile } from "obsidian";
@@ -14,7 +14,8 @@ export const checkEmptyContentHeading: IssueScanner = {
 		description: "Check if the heading has no content",
 		default: true,
 	},
-	issueType: INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING,
+	issueType:
+		"EMPTY_CONTENT_HEADING" as INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING,
 	func: (file: TFile, data: Data) => {
 		// get the heading and inner content of file
 

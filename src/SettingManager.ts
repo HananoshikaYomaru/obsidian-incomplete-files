@@ -6,7 +6,7 @@ import { State } from "@/util/State";
 import { Plugin } from "obsidian";
 import { z } from "zod";
 import { parseFolders } from "./util/parseFolder";
-import { INCOMPLETE_ISSUE_TYPE } from "@/rules/issueScanners";
+import { INCOMPLETE_ISSUE_TYPE } from "./rules/INCOMPLETE_ISSUE_TYPE";
 
 export type Setting = Prettify<z.TypeOf<typeof SettingSchema>>;
 

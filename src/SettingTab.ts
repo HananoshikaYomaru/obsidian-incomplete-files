@@ -1,7 +1,8 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import IncompleteFilesPlugin from "./main";
 import type { ScanFunction } from "./constructCheckArray";
-import { INCOMPLETE_ISSUE_TYPE, issueScanners } from "@/rules/issueScanners";
+import { issueScanners } from "@/rules/issueScanners";
+import { INCOMPLETE_ISSUE_TYPE } from "./rules/INCOMPLETE_ISSUE_TYPE";
 import { initIncompleteFiles } from "@/initIncompleteFiles";
 import { incompleteFiles } from "@/ui/helpers/store";
 

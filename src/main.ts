@@ -186,6 +186,27 @@ export default class IncompleteFilesPlugin extends Plugin {
 		}
 	};
 
+	getAllMarkdownFiles() {
+		const { vault } = this.app;
+		// the plugin ignore folders
+		const _ignoreFolders = this.settingManager.getSettings().ignoreFolders;
+		const config = this.app.vault.config;
+		// the system ignore folders
+		const userExcludedFolders = config.userIgnoreFilters ?? [];
+		const ignoreFolders = [
+			..._ignoreFolders,
+			...userExcludedFolders,
+		].filter(Boolean);
+
+		const files = vault.getMarkdownFiles().filter((file) => {
+			// if the file.path start with the ignoreFolders or the userExcludedFolders, then return false
+			return !ignoreFolders.some((folder) =>
+				file.path.startsWith(folder)
+			);
+		});
+		return files;
+	}
+
 	onunload() {
 		super.onunload();
 		// unload all event ref

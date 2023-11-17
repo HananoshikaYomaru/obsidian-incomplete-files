@@ -5,7 +5,7 @@ import type { TFile } from "obsidian";
 import type { RawIssue } from "@/SettingsSchemas";
 import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
 import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
-import { INCOMPLETE_ISSUE_TYPE } from "@/rules/issueScanners";
+import { INCOMPLETE_ISSUE_TYPE } from "./rules/INCOMPLETE_ISSUE_TYPE";
 
 /**
  * given a file, check if it is incomplete. If it is incomplete, return the issue why it is incomplete

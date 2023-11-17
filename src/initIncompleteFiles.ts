@@ -1,4 +1,3 @@
-import { getAllMarkdownFiles } from "@/util/getAllMarkdownFiles";
 import IncompleteFilesPlugin from "@/main";
 import { getLastUpdateTime } from "@/util/getLastUpdateTime";
 import { analyseFile } from "@/analyseFile";
@@ -16,7 +15,7 @@ export const initIncompleteFiles = async (
 	if (plugin.lock) return;
 	plugin.lock = true;
 	// get all markdown files from the vault
-	const files = getAllMarkdownFiles(plugin);
+	const files = plugin.getAllMarkdownFiles();
 	const setting = plugin.settingManager.getSettings();
 
 	if (force) {

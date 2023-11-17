@@ -1,7 +1,7 @@
 import { visit } from "unist-util-visit";
 import type { Data } from "@/util/getDataFromFile";
 import { TFile } from "obsidian";
-import { INCOMPLETE_ISSUE_TYPE } from "@/rules/issueScanners";
+import { INCOMPLETE_ISSUE_TYPE } from "./INCOMPLETE_ISSUE_TYPE";
 import type { IssueScanner } from "@/rules/issueScanners";
 import type { RawIssue } from "@/SettingsSchemas";
 import type { Heading, Node, Text } from "mdast";
