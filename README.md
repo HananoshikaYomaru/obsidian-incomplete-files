@@ -22,7 +22,7 @@ Demo:
 | -- | -- | -- |
 | EMTPY CONTENT | **This rule cannot be turned off**. When the file has no content, it is treaded as incomplete. | ✅ |
 | EMPTY CONTENT HEADING | When a heading has no content, it is treated as incomplete. | ✅ |
-| INCOMPLETE STNTAX | When a file has the incomplete syntax, it is treated as incomplete | ✅ |  
+| INCOMPLETE STNTAX | When a file has the incomplete syntax, it is treated as incomplete. The incomplete syntax is `%% INCOMPLETE(issue which is a string) %%` or `%% INCOMPLETE %%` | ✅ |  
 
 ## Installation
 

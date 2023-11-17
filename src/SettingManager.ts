@@ -6,6 +6,7 @@ import { State } from "@/util/State";
 import { Plugin } from "obsidian";
 import { z } from "zod";
 import { parseFolders } from "./util/parseFolder";
+import { INCOMPLETE_ISSUE_TYPE } from "@/rules/issueScanners";
 
 export type Setting = Prettify<z.TypeOf<typeof SettingSchema>>;
 
@@ -110,8 +111,8 @@ export class MySettingManager implements ISettingManager<Setting> {
 }
 
 export const DEFAULT_SETTING: Setting = {
-	emptyContentHeading: true,
-	incompleteSyntax: true,
+	[INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING]: true,
+	[INCOMPLETE_ISSUE_TYPE.INCOMPLETE_SYNTAX]: true,
 	ignoreFoldersString: "",
 	incompleteFiles: [],
 	completeProperty: "",

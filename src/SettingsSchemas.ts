@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { INCOMPLETE_ISSUE_TYPE } from "@/rules/INCOMPLETE_ISSUE_TYPE";
+import { INCOMPLETE_ISSUE_TYPE } from "@/rules/issueScanners";
 
 const headingSchema = z.object({
 	depth: z.number().min(1).max(6),
@@ -37,8 +37,8 @@ const fileSchema = z.object({
 export type IncompleteFile = z.infer<typeof fileSchema>;
 
 export const SettingSchema = z.object({
-	emptyContentHeading: z.boolean().default(true),
-	incompleteSyntax: z.boolean().default(true),
+	[INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING]: z.boolean().default(true),
+	[INCOMPLETE_ISSUE_TYPE.INCOMPLETE_SYNTAX]: z.boolean().default(true),
 	ignoreFoldersString: z.string().default(""),
 	incompleteFiles: fileSchema.array().default([]),
 	completeProperty: z.string().default(""),

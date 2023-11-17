@@ -1,8 +1,9 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import IncompleteFilesPlugin from "./main";
-import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
-import type { CheckFunction } from "./constructCheckArray";
-import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
+import type { ScanFunction } from "./constructCheckArray";
+import { INCOMPLETE_ISSUE_TYPE, issueScanners } from "@/rules/issueScanners";
+import { initIncompleteFiles } from "@/initIncompleteFiles";
+import { incompleteFiles } from "@/ui/helpers/store";
 
 export class SettingTab extends PluginSettingTab {
 	plugin: IncompleteFilesPlugin;
@@ -12,7 +13,7 @@ export class SettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	toggleCheckArray(func: CheckFunction, value: boolean) {
+	toggleCheckArray(func: ScanFunction, value: boolean) {
 		if (value) {
 			this.plugin.checkArray.push(func);
 		} else {
@@ -29,49 +30,49 @@ export class SettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl)
-			.setName("Empty content heading")
-			.setDesc(
-				"If the heading has no content, it will be treated as incomplete"
-			)
-			.addToggle((toggle) => {
-				toggle
-					.setValue(
-						this.plugin.settingManager.getSettings()
-							.emptyContentHeading
-					)
-					.onChange((value) => {
-						this.plugin.settingManager.updateSettings((setting) => {
-							setting.value.emptyContentHeading = value;
-							this.toggleCheckArray(
-								checkEmptyContentHeading.func,
-								value
-							);
-						});
-					});
-			});
+		// new Setting(containerEl)
+		// 	.setName("Empty content heading")
+		// 	.setDesc(
+		// 		"If the heading has no content, it will be treated as incomplete"
+		// 	)
+		// 	.addToggle((toggle) => {
+		// 		toggle
+		// 			.setValue(
+		// 				this.plugin.settingManager.getSettings()
+		// 					.emptyContentHeading
+		// 			)
+		// 			.onChange((value) => {
+		// 				this.plugin.settingManager.updateSettings((setting) => {
+		// 					setting.value.emptyContentHeading = value;
+		// 					this.toggleCheckArray(
+		// 						checkEmptyContentHeading.func,
+		// 						value
+		// 					);
+		// 				});
+		// 			});
+		// 	});
 
-		new Setting(containerEl)
-			.setName("Incomplete syntax")
-			.setDesc(
-				"If the file has an incomplete syntax, it will be treated as incomplete"
-			)
-			.addToggle((toggle) => {
-				toggle
-					.setValue(
-						this.plugin.settingManager.getSettings()
-							.incompleteSyntax
-					)
-					.onChange((value) => {
-						this.plugin.settingManager.updateSettings((setting) => {
-							setting.value.incompleteSyntax = value;
-							this.toggleCheckArray(
-								checkIncompleteSyntax.func,
-								value
-							);
-						});
-					});
-			});
+		// new Setting(containerEl)
+		// 	.setName("Incomplete syntax")
+		// 	.setDesc(
+		// 		"If the file has an incomplete syntax, it will be treated as incomplete"
+		// 	)
+		// 	.addToggle((toggle) => {
+		// 		toggle
+		// 			.setValue(
+		// 				this.plugin.settingManager.getSettings()
+		// 					.incompleteSyntax
+		// 			)
+		// 			.onChange((value) => {
+		// 				this.plugin.settingManager.updateSettings((setting) => {
+		// 					setting.value.incompleteSyntax = value;
+		// 					this.toggleCheckArray(
+		// 						checkIncompleteSyntax.func,
+		// 						value
+		// 					);
+		// 				});
+		// 			});
+		// 	});
 
 		new Setting(containerEl)
 			.setName("Complete property")
@@ -87,6 +88,65 @@ export class SettingTab extends PluginSettingTab {
 					});
 				});
 			});
+
+		for (const scanner of issueScanners) {
+			// we don't have the setting for empty content
+			if (scanner.issueType === INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT)
+				continue;
+			const issueType = scanner.issueType as Exclude<
+				INCOMPLETE_ISSUE_TYPE,
+				INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT
+			>;
+			new Setting(containerEl)
+				.setName(scanner.setting.name)
+				.setDesc(scanner.setting.description)
+				.addToggle((toggle) => {
+					toggle
+						.setValue(
+							this.plugin.settingManager.getSettings()[issueType]
+						)
+						.onChange((value) => {
+							const newSetting =
+								this.plugin.settingManager.updateSettings(
+									(setting) => {
+										setting.value[issueType] = value;
+										this.toggleCheckArray(
+											scanner.func,
+											value
+										);
+
+										// if we turn it off, we simply remove all the issues with that issue type from the incomplete files
+										if (!value) {
+											setting.value.incompleteFiles =
+												setting.value.incompleteFiles.map(
+													(incompleteFile) => {
+														return {
+															...incompleteFile,
+															issues: incompleteFile.issues.filter(
+																(issue) =>
+																	issue.type !==
+																	issueType
+															),
+														};
+													}
+												);
+										} else {
+											// we reanalyse all the files
+											initIncompleteFiles(
+												this.plugin,
+												true
+											);
+										}
+									}
+								);
+							// update the store
+							// FIXME: this should not be do here if consider architecture, but it is fine for now
+							incompleteFiles.set(newSetting.incompleteFiles);
+							// refresh the status bar item
+							this.plugin.refreshStatusBarItem();
+						});
+				});
+		}
 
 		const ignoredFoldersSetting = new Setting(containerEl)
 			.setName("Ignore folders")

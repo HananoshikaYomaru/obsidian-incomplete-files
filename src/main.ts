@@ -1,12 +1,12 @@
-import {  Plugin, TFile, TAbstractFile } from "obsidian";
-import type {EventRef} from "obsidian";
+import { Plugin, TFile, TAbstractFile } from "obsidian";
+import type { EventRef } from "obsidian";
 import "@total-typescript/ts-reset";
 import "@total-typescript/ts-reset/dom";
 import { MySettingManager } from "@/SettingManager";
 import { initIncompleteFiles } from "@/initIncompleteFiles";
 import { analyseFile } from "./analyseFile";
-import {  constructCheckArray } from "./constructCheckArray";
-import type {CheckFunction} from "./constructCheckArray";
+import { constructScanArray } from "./constructCheckArray";
+import type { ScanFunction } from "./constructCheckArray";
 import { SettingTab } from "@/SettingTab";
 import { checkEmptyContent } from "@/rules/checkEmptyContent";
 import { IncompleteFilesView, VIEW_TYPE } from "@/IncompleteFileView";
@@ -21,7 +21,7 @@ export default class IncompleteFilesPlugin extends Plugin {
 	// @ts-ignore
 	settingManager: MySettingManager;
 	private eventRefs: EventRef[] = [];
-	checkArray: CheckFunction[] = [checkEmptyContent.func];
+	checkArray: ScanFunction[] = [checkEmptyContent.func];
 	newFiles = new Set<TFile>();
 
 	async onload() {
@@ -32,7 +32,7 @@ export default class IncompleteFilesPlugin extends Plugin {
 		await this.settingManager.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
 
-		this.checkArray = constructCheckArray(this);
+		this.checkArray = constructScanArray(this);
 
 		this.registerView(
 			VIEW_TYPE,
@@ -164,6 +164,27 @@ export default class IncompleteFilesPlugin extends Plugin {
 
 		this.app.workspace.revealLeaf(leaf);
 	}
+
+	refreshStatusBarItem = () => {
+		const setting = this.settingManager.getSettings();
+
+		// update the status bar item
+		const statusBarItem = document.querySelector(
+			".status-bar-item.plugin-incomplete-files"
+		) as HTMLDivElement | null;
+		if (statusBarItem) {
+			const numIncompleteFiles = setting.incompleteFiles.length;
+			const numIssues = setting.incompleteFiles.reduce(
+				(acc, cur) => acc + cur.issues.length,
+				0
+			);
+			statusBarItem.setText(
+				`${numIncompleteFiles} incomplete file${
+					numIncompleteFiles > 1 ? "s" : ""
+				}, ${numIssues} issue${numIssues > 1 ? "s" : ""}`
+			);
+		}
+	};
 
 	onunload() {
 		super.onunload();
