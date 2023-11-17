@@ -14,8 +14,7 @@ export const checkEmptyContentHeading: IssueScanner = {
 		description: "Check if the heading has no content",
 		default: true,
 	},
-	issueType:
-		"EMPTY_CONTENT_HEADING" as INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING,
+	issueType: INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING,
 	func: (file: TFile, data: Data) => {
 		// get the heading and inner content of file
 
