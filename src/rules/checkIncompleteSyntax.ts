@@ -3,7 +3,7 @@ import type { CheckFunction } from "@/constructCheckArray";
 import type { Data } from "@/util/getDataFromFile";
 import { TFile } from "obsidian";
 import { INCOMPLETE_ISSUE_TYPE } from "@/rules/INCOMPLETE_ISSUE_TYPE";
-import type { Issue } from "@/SettingsSchemas";
+import type { RawIssue } from "@/SettingsSchemas";
 import type { Heading, Node, Text } from "mdast";
 import { nodeToString } from "@/util/nodeToString";
 
@@ -46,7 +46,7 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 		return [];
 	}
 
-	const issues: Issue[] = [];
+	const issues: RawIssue[] = [];
 	// @ts-ignore
 	let currentHeading: Heading = null;
 

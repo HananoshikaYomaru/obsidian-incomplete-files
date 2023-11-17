@@ -1,6 +1,10 @@
 ## Obsidian Incomplete files
 
-This plugin help discover your incomplete files base on given rules
+This plugin help discover your incomplete files base on given rules.
+
+✅ Powerful, Dead Simple
+
+Demo:
 
 ## Features
 

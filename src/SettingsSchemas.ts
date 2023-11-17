@@ -20,7 +20,7 @@ const issueSchema = z.object({
 	heading: headingSchema.optional(),
 });
 
-export type Issue = z.infer<typeof issueSchema>;
+export type RawIssue = z.infer<typeof issueSchema>;
 
 const fileSchema = z.object({
 	/**

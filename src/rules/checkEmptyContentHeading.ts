@@ -3,7 +3,7 @@ import { INCOMPLETE_ISSUE_TYPE } from "@/rules/INCOMPLETE_ISSUE_TYPE";
 import type { CheckFunction } from "@/constructCheckArray";
 import type { Data } from "@/util/getDataFromFile";
 import type { TFile } from "obsidian";
-import type { Issue } from "@/SettingsSchemas";
+import type { RawIssue } from "@/SettingsSchemas";
 import type { Heading } from "mdast";
 import { nodeToString } from "@/util/nodeToString";
 
@@ -40,7 +40,7 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 		return [];
 	}
 
-	const issues: Issue[] = [];
+	const issues: RawIssue[] = [];
 
 	// Traverse the AST and find headings with no content or subheadings
 	visit(data.ast!, (node, index, parent) => {
