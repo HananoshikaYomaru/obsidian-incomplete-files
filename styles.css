@@ -22,7 +22,7 @@
 	align-items: flex-start;
 }
 
-.incomplete-files-reason > svg {
+.incomplete-files-issue > svg {
 	margin-right: 6px;
 	height: 16px;
 	width: 16px;
@@ -30,15 +30,15 @@
 	min-height: 16px;
 }
 
-.incomplete-files-reason[data-reason="EMPTY_CONTENT"] svg {
+.incomplete-files-issue[data-issue="EMPTY_CONTENT"] svg {
 	stroke: var(--color-red);
 }
 
-.incomplete-files-reason[data-reason="EMPTY_CONTENT_HEADING"] svg {
+.incomplete-files-issue[data-issue="EMPTY_CONTENT_HEADING"] svg {
 	stroke: var(--color-yellow);
 }
 
-.incomplete-files-reason[data-reason="INCOMPLETE_SYNTAX"] svg {
+.incomplete-files-issue[data-issue="INCOMPLETE_SYNTAX"] svg {
 	stroke: var(--color-orange);
 }
 
@@ -108,24 +108,24 @@
 	height: 1px;
 }
 
-.incomplete-files-reason-list {
+.incomplete-files-issue-list {
 	list-style: none;
 	padding-left: 0;
 	margin-top: 6px;
 	margin-bottom: 6px;
 }
-li.incomplete-files-reason {
+li.incomplete-files-issue {
 	cursor: pointer;
 	padding: 6px;
 	border-radius: 4px;
 }
-li.incomplete-files-reason:hover {
+li.incomplete-files-issue:hover {
 	color: var(--color-purple);
 	/* bg a little bit dimmer */
 	background-color: rgba(0, 0, 0, 0.1);
 }
 
-.incomplete-files-reason {
+.incomplete-files-issue {
 	display: flex;
 	align-items: start;
 	padding: 6px;

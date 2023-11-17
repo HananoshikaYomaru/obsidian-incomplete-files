@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
+import { INCOMPLETE_ISSUE_TYPE } from "@/rules/INCOMPLETE_ISSUE_TYPE";
 
 const headingSchema = z.object({
 	depth: z.number().min(1).max(6),
@@ -8,19 +8,19 @@ const headingSchema = z.object({
 
 export type Heading = z.infer<typeof headingSchema>;
 
-const incompleteReasonSchema = z.object({
-	type: z.nativeEnum(INCOMPLETE_REASON_TYPE),
+const issueSchema = z.object({
+	type: z.nativeEnum(INCOMPLETE_ISSUE_TYPE),
 	/**
 	 * e.g. "(INCOMPLETE_SYNTAX) H2 - What is it? "
 	 */
 	title: z.string(),
 	/**
-	 * if the reason has corresponding a heading
+	 * if the issue has corresponding a heading
 	 */
 	heading: headingSchema.optional(),
 });
 
-export type IncompleteReason = z.infer<typeof incompleteReasonSchema>;
+export type Issue = z.infer<typeof issueSchema>;
 
 const fileSchema = z.object({
 	/**
@@ -29,7 +29,7 @@ const fileSchema = z.object({
 	hash: z.string(),
 	path: z.string(),
 	basename: z.string(),
-	reasons: incompleteReasonSchema.array(),
+	issues: issueSchema.array(),
 	tags: z.string().array(),
 	lastChecked: z.coerce.date(),
 });

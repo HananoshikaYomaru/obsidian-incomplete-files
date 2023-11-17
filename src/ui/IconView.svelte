@@ -7,9 +7,9 @@
 
 	$: issues = sortedFiles
 		.map((file) => {
-			return file.reasons.map((reason) => {
+			return file.issues.map((issue) => {
 				return {
-					...reason,
+					...issue,
 					file,
 				};
 			});

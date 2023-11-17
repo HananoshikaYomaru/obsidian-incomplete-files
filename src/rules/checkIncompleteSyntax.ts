@@ -1,16 +1,16 @@
 import { visit } from "unist-util-visit";
 import type { CheckFunction } from "@/constructCheckArray";
-import type {Data} from "@/util/getDataFromFile";
+import type { Data } from "@/util/getDataFromFile";
 import { TFile } from "obsidian";
-import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
-import type {IncompleteReason} from "@/SettingsSchemas";
+import { INCOMPLETE_ISSUE_TYPE } from "@/rules/INCOMPLETE_ISSUE_TYPE";
+import type { Issue } from "@/SettingsSchemas";
 import type { Heading, Node, Text } from "mdast";
 import { nodeToString } from "@/util/nodeToString";
 
 const icon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-x"><path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="m19 10-4 4"/><path d="m15 10 4 4"/></svg>`;
 
 /**
- *  %% INCOMPLETE(reason which is a string) %%
+ *  %% INCOMPLETE(issue which is a string) %%
  * %% INCOMPLETE %%
  */
 const syntaxRegex = /%%\s*INCOMPLETE(?:\(([^)]+)\))?\s*%%/g;
@@ -20,8 +20,8 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 
 	// if the body is completely empty, return []
 
-	// if the body contain the incomplete syntax, return the reason why it is incomplete
-	// associate the reason with the closest heading above it.
+	// if the body contain the incomplete syntax, return the issue why it is incomplete
+	// associate the issue with the closest heading above it.
 	// if there is no heading above it, don't need to associate. e.g.
 
 	// INCOMPLETE(no banner image)
@@ -31,11 +31,11 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 
 	// 	return [
 	// 		{
-	// 			type: INCOMPLETE_REASON_TYPE.INCOMPLETE_SYNTAX,
+	// 			type: INCOMPLETE_ISSUE_TYPE.INCOMPLETE_SYNTAX,
 	// 			title: `file is incomplete because no banner image`,
 	// 		},
 	// 		{
-	// 			type: INCOMPLETE_REASON_TYPE.INCOMPLETE_SYNTAX,
+	// 			type: INCOMPLETE_ISSUE_TYPE.INCOMPLETE_SYNTAX,
 	// 			title: `H1 ${heading 1 text} is incomplete because not enough content`,
 	// 			heading: ...
 	// 		},
@@ -46,7 +46,7 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 		return [];
 	}
 
-	const incompleteReasons: IncompleteReason[] = [];
+	const issues: Issue[] = [];
 	// @ts-ignore
 	let currentHeading: Heading = null;
 
@@ -57,17 +57,17 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 			const matches = (node as Text).value.matchAll(syntaxRegex);
 
 			for (const match of matches) {
-				const reason = match[1] ?? "some reason"; // Capture the incomplete reason
-				const reasonTitle = currentHeading
+				const issue = match[1] ?? "some issues"; // Capture the incomplete issue
+				const title = currentHeading
 					? `H${currentHeading.depth} ${nodeToString(
 							// @ts-ignore
 							currentHeading
-					  )} is incomplete because ${reason}`
-					: `file is incomplete because ${reason}`;
+					  )} is incomplete because ${issue}`
+					: `file is incomplete because ${issue}`;
 
-				incompleteReasons.push({
-					type: INCOMPLETE_REASON_TYPE.INCOMPLETE_SYNTAX,
-					title: reasonTitle,
+				issues.push({
+					type: INCOMPLETE_ISSUE_TYPE.INCOMPLETE_SYNTAX,
+					title: title,
 					heading: currentHeading
 						? {
 								depth: currentHeading.depth,
@@ -80,7 +80,7 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 		}
 	});
 
-	return incompleteReasons;
+	return issues;
 };
 
 export const checkIncompleteSyntax = {

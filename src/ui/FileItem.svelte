@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formatDate } from "@/util/formatDate";
 	import type { IncompleteFile } from "@/SettingsSchemas";
-	import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
+	import { INCOMPLETE_ISSUE_TYPE } from "@/rules/INCOMPLETE_ISSUE_TYPE";
 	import { checkEmptyContent } from "@/rules/checkEmptyContent";
 	import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
 	import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
@@ -31,28 +31,27 @@
 			</small>
 		</span>
 	</summary>
-	<ul class="incomplete-files-reason-list is-clickable">
-		{#each file.reasons as reason}
+	<ul class="incomplete-files-issue-list is-clickable">
+		{#each file.issues as issue}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 			<li
-				class="incomplete-files-reason tree-item-self is-clickable"
-				data-reason={reason.type}
-				data-reason-heading={reason.heading?.text}
-				data-reason-heading-depth={reason.heading?.depth}
+				class="incomplete-files-issue tree-item-self is-clickable"
+				data-issue={issue.type}
+				data-issue-heading={issue.heading?.text}
+				data-issue-heading-depth={issue.heading?.depth}
 				on:click={(event) => {
-					if (reason.heading) goToHeading(file, reason.heading);
+					if (issue.heading) goToHeading(file, issue.heading);
 					else goToFile(file);
 				}}
 			>
-				{@html reason.type === INCOMPLETE_REASON_TYPE.EMPTY_CONTENT
+				{@html issue.type === INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT
 					? checkEmptyContent.icon
-					: reason.type ===
-					  INCOMPLETE_REASON_TYPE.EMPTY_CONTENT_HEADING
+					: issue.type === INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING
 					? checkEmptyContentHeading.icon
 					: checkIncompleteSyntax.icon}
-				{reason.title}
+				{issue.title}
 			</li>
 		{/each}
 	</ul>

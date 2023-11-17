@@ -12,7 +12,7 @@ export const analyseFile = async (
 	const data = await getDataFromFile(plugin, file);
 
 	// for each check function, check if the file is incomplete
-	const incompleteReasons = plugin.checkArray.flatMap((checkFunction) =>
+	const issues = plugin.checkArray.flatMap((checkFunction) =>
 		checkFunction(file, data)
 	);
 
@@ -23,14 +23,14 @@ export const analyseFile = async (
 			(f) => f.path !== file.path
 		);
 
-		if (incompleteReasons.length > 0)
+		if (issues.length > 0)
 			// push a new entry
 			setting.value.incompleteFiles.push({
 				hash: getHashByFile(file.path, plugin.app)!,
 				path: file.path,
 				lastChecked: getLastUpdateTime(file),
 				tags: data.tags,
-				reasons: incompleteReasons,
+				issues: issues,
 				basename: file.basename,
 			});
 	});

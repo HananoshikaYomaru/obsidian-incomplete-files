@@ -1,12 +1,12 @@
 import { writable } from "svelte/store";
 import IncompleteFilesPlugin from "@/main";
-import type { IncompleteFile, IncompleteReason } from "@/SettingsSchemas";
+import type { IncompleteFile, Issue } from "@/SettingsSchemas";
 import { SORT_ORDER, DISPLAY_OPTION } from "@/ui/helpers/enums";
 
 export const plugin = writable<IncompleteFilesPlugin>();
 export const incompleteFiles = writable<IncompleteFile[]>([]);
 export type Issue = Prettify<
-	IncompleteReason & {
+	Issue & {
 		file: IncompleteFile;
 	}
 >;
@@ -14,9 +14,9 @@ export type Issue = Prettify<
 // incompleteFiles.subscribe((incompleteFilesValue) => {
 // 	issues.set(
 // 		incompleteFilesValue.flatMap((file) => {
-// 			return file.reasons.map((reason) => {
+// 			return file.issues.map((issue) => {
 // 				return {
-// 					...reason,
+// 					...issue,
 // 					file,
 // 				};
 // 			});

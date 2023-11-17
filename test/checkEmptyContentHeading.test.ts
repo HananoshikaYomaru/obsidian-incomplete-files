@@ -22,7 +22,7 @@ describe("checkEmptyContentHeading", () => {
 		extension: "md",
 	};
 
-	test("should return no incomplete reasons when the body is completely empty", () => {
+	test("should return no incomplete issues when the body is completely empty", () => {
 		const data = getDataFromTextSync("");
 		const result = checkEmptyContentHeading.func(mockFile, data);
 		expect(result).toEqual([]);

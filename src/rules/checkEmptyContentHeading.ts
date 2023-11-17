@@ -1,9 +1,9 @@
 import { visit } from "unist-util-visit";
-import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
-import type {CheckFunction} from "@/constructCheckArray";
+import { INCOMPLETE_ISSUE_TYPE } from "@/rules/INCOMPLETE_ISSUE_TYPE";
+import type { CheckFunction } from "@/constructCheckArray";
 import type { Data } from "@/util/getDataFromFile";
 import type { TFile } from "obsidian";
-import type { IncompleteReason } from "@/SettingsSchemas";
+import type { Issue } from "@/SettingsSchemas";
 import type { Heading } from "mdast";
 import { nodeToString } from "@/util/nodeToString";
 
@@ -12,7 +12,7 @@ const icon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" vie
 const func: CheckFunction = (file: TFile, data: Data) => {
 	// get the heading and inner content of file
 
-	// if a heading has no content, return the reason why it is incomplete
+	// if a heading has no content, return the issue why it is incomplete
 	// a inner heading is treated as content
 
 	// if the heading has inner heading, it is okay. e.g.
@@ -24,12 +24,12 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 
 	// 	return [
 	// 		{
-	// 			type: INCOMPLETE_REASON_TYPE.EMPTY_CONTENT_HEADING,
+	// 			type: INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING,
 	// 			title: `H2 ${heading 3 text} is empty`,
 	// 			heading: ...
 	// 		},
 	// 		{
-	// 			type: INCOMPLETE_REASON_TYPE.EMPTY_CONTENT_HEADING,
+	// 			type: INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING,
 	// 			title: `H1 ${heading 4 text} is empty`,
 	// 			heading: ...
 	// 		},
@@ -40,7 +40,7 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 		return [];
 	}
 
-	const incompleteReasons: IncompleteReason[] = [];
+	const issues: Issue[] = [];
 
 	// Traverse the AST and find headings with no content or subheadings
 	visit(data.ast!, (node, index, parent) => {
@@ -83,8 +83,8 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 			}
 
 			if (!hasContent) {
-				incompleteReasons.push({
-					type: INCOMPLETE_REASON_TYPE.EMPTY_CONTENT_HEADING,
+				issues.push({
+					type: INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING,
 					// @ts-ignore
 					title: `H${currentHeading.depth} ${nodeToString(
 						currentHeading
@@ -98,7 +98,7 @@ const func: CheckFunction = (file: TFile, data: Data) => {
 		}
 	});
 
-	return incompleteReasons;
+	return issues;
 };
 
 export const checkEmptyContentHeading = {

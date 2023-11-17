@@ -30,7 +30,7 @@
 		<span id="count" class="tree-item-flair">
 			{$displayOption === DISPLAY_OPTION.FOLDER_LIST
 				? files.length
-				: sortedFiles.map((f) => f.reasons).flat().length}
+				: sortedFiles.map((f) => f.issues).flat().length}
 		</span>
 	</summary>
 	{#if $displayOption === DISPLAY_OPTION.FOLDER_LIST}

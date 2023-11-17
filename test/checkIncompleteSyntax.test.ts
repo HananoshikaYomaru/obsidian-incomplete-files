@@ -1,6 +1,6 @@
 import { describe, test, expect, vi } from "vitest";
 import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
-import type {TFile} from "obsidian";
+import type { TFile } from "obsidian";
 import { getDataFromTextSync } from "@/util/getDataFromFile";
 
 vi.mock("obsidian");

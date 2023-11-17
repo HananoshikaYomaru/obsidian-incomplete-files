@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { INCOMPLETE_REASON_TYPE } from "@/rules/INCOMPLETE_REASON_TYPE";
+	import { INCOMPLETE_ISSUE_TYPE } from "@/rules/INCOMPLETE_ISSUE_TYPE";
 	import { checkEmptyContent } from "@/rules/checkEmptyContent";
 	import { checkEmptyContentHeading } from "@/rules/checkEmptyContentHeading";
 	import { checkIncompleteSyntax } from "@/rules/checkIncompleteSyntax";
@@ -24,16 +24,15 @@
 		// Function to update the button's content
 		function updateIcon() {
 			button.buttonEl.innerHTML =
-				issue.type === INCOMPLETE_REASON_TYPE.EMPTY_CONTENT
+				issue.type === INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT
 					? checkEmptyContent.icon
-					: issue.type ===
-					  INCOMPLETE_REASON_TYPE.EMPTY_CONTENT_HEADING
+					: issue.type === INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT_HEADING
 					? checkEmptyContentHeading.icon
 					: checkIncompleteSyntax.icon;
-			button.buttonEl.dataset.reason = issue.type;
+			button.buttonEl.dataset.issue = issue.type;
 			button.buttonEl.classList.add(
 				"is-clickable",
-				"incomplete-files-reason",
+				"incomplete-files-issue",
 				"issue-icon"
 			);
 		}
