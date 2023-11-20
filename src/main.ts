@@ -41,7 +41,7 @@ export default class IncompleteFilesPlugin extends Plugin {
 
 		this.addCommand({
 			id: "open-incomplete-files-view",
-			name: "Open Incomplete Files View",
+			name: "Open incomplete files view",
 			callback: () => this.activateView(),
 		});
 

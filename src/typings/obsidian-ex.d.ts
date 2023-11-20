@@ -1,3 +1,4 @@
+// copied from https://github.com/Fevol/obsidian-typings/blob/e1ff0b68a2d4e6d6ff42b23b5eb18f1e30a4054c/obsidian-ex.d.ts
 import {
 	App,
 	CachedMetadata,

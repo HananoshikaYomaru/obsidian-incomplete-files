@@ -25,7 +25,7 @@ export class IncompleteFilesView extends ItemView {
 	}
 
 	getDisplayText() {
-		return "Incomplete Files";
+		return "Incomplete files";
 	}
 
 	async onOpen() {

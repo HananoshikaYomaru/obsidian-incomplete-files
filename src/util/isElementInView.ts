@@ -34,7 +34,8 @@ export function isFileInView(filePath: string) {
 	) as HTMLDivElement | null;
 
 	if (!element || !incompleteFilesContainer) {
-		throw new Error("element or incompleteFilesContainer is null");
+		// this is possible because when the incomplete files view is not open.
+		return;
 	}
 
 	return isElementInView(element, incompleteFilesContainer);
