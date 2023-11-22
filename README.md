@@ -31,7 +31,7 @@ Demo: https://www.youtube.com/watch?v=GO3N-IdBNVA&ab_channel=YomaruHananoshika
 
 ### Through community plugin store
 
-Waiting for obsidian team approval: https://github.com/obsidianmd/obsidian-releases/pull/2675#issuecomment-1819117579
+Waiting for obsidian team approval: https://github.com/obsidianmd/obsidian-releases/pull/2681
 
 ### Through BRAT
 
