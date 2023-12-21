@@ -90,6 +90,21 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
+		new Setting(containerEl)
+			.setName("Analyse file when editing")
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						this.plugin.settingManager.getSettings()
+							.analyseFileWhenEditing
+					)
+					.onChange((value) => {
+						this.plugin.settingManager.updateSettings((setting) => {
+							setting.value.analyseFileWhenEditing = value;
+						});
+					});
+			});
+
 		for (const scanner of issueScanners) {
 			// we don't have the setting for empty content
 			if (scanner.issueType === INCOMPLETE_ISSUE_TYPE.EMPTY_CONTENT)

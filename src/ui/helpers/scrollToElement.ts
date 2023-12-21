@@ -4,6 +4,9 @@ import {
 } from "@/ui/helpers/store";
 import { isElementInView } from "@/util/isElementInView";
 
+/**
+ * this function will scroll to the element and highlight it in the incomplete files view
+ */
 export function scrollToElement(filePath: string) {
 	const element = document.getElementById(
 		filePath

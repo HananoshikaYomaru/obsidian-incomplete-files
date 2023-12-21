@@ -46,6 +46,17 @@ export default class IncompleteFilesPlugin extends Plugin {
 		});
 
 		this.addCommand({
+			id: "reanalyse-current-file",
+			name: "Reanalyse current file",
+			editorCallback: async (editor, view) => {
+				const file = view.file;
+				if (file instanceof TFile && file.extension === "md") {
+					await analyseFile(this, file);
+				}
+			},
+		});
+
+		this.addCommand({
 			// force re-analyse all files
 			id: "reanalyse-all",
 			name: "Reanalyse all files",
@@ -87,6 +98,12 @@ export default class IncompleteFilesPlugin extends Plugin {
 
 		this.registerEvent(
 			this.app.vault.on("modify", (file) => {
+				// if file is on the activeleaf and the setting is not true, then should not analyse the file
+				if (
+					file === this.app.workspace.getActiveFile() &&
+					!this.settingManager.getSettings().analyseFileWhenEditing
+				)
+					return;
 				if (file instanceof TFile) {
 					analyseFile(this, file);
 					const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE);

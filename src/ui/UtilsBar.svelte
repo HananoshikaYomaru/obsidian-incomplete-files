@@ -9,8 +9,10 @@
 		sortBy,
 		plugin,
 	} from "@/ui/helpers/store";
-	import { DropdownComponent } from "obsidian";
+	import { DropdownComponent, setTooltip } from "obsidian";
 	import { toggleSummaries } from "@/ui/helpers/toggleSummaries";
+	import { scrollToElement } from "@/ui/helpers/scrollToElement";
+
 	async function refresh() {
 		await initIncompleteFiles($plugin);
 	}
@@ -83,20 +85,37 @@
 			},
 		};
 	}
+
+	function addTooltip(node: HTMLElement, text: string) {
+		setTooltip(node, text);
+	}
 </script>
 
 <div class="incomplete-files-utils">
 	<div id="group-dropdown-container" use:groupDropdownAction />
 	<div id="sort-dropdown-container" use:sortDropdownAction />
-	<button on:click={refresh}>
+	<button on:click={refresh} use:addTooltip={"Reanalyse"}>
 		<Icon name="rotate-cw" />
 	</button>
-	<button on:click={toggleSummaries}>
+	<button
+		on:click={toggleSummaries}
+		use:addTooltip={$areSummariesExpanded ? "Collapse" : "Expand"}
+	>
 		<!-- toggle collapse summary -->
 		<Icon
 			name={$areSummariesExpanded
 				? "chevrons-down-up"
 				: "chevrons-up-down"}
 		/>
+	</button>
+	<!-- locate current file button -->
+	<button
+		on:click={() => {
+			const activeFile = $plugin.app.workspace.getActiveFile();
+			if (activeFile) scrollToElement(activeFile.path);
+		}}
+		use:addTooltip={"Locate"}
+	>
+		<Icon name="map-pin" />
 	</button>
 </div>

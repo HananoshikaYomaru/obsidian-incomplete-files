@@ -6,8 +6,7 @@ This plugin help discover your incomplete files base on given rules.
 
 ![CleanShot 2023-11-17 at 14 22 52](https://github.com/HananoshikaYomaru/obsidian-incomplete-files/assets/43137033/a9555c5a-7ac4-47d1-bd32-1066a009deab)
 
-
-Demo: https://www.youtube.com/watch?v=GO3N-IdBNVA&ab_channel=YomaruHananoshika
+Demo: <https://www.youtube.com/watch?v=GO3N-IdBNVA&ab_channel=YomaruHananoshika>
 
 ## Features
 
@@ -31,7 +30,7 @@ Demo: https://www.youtube.com/watch?v=GO3N-IdBNVA&ab_channel=YomaruHananoshika
 
 ### Through community plugin store
 
-Waiting for obsidian team approval: https://github.com/obsidianmd/obsidian-releases/pull/2681
+You can install this plugin in the community plugin store. 👍
 
 ### Through BRAT
 
@@ -46,16 +45,15 @@ Waiting for obsidian team approval: https://github.com/obsidianmd/obsidian-relea
 3. `cd obsidian-incomplete-files && bun install && bun run build`
 4. there you go 🎉
 
-## Contribution 
+## Contribution
 
-### how to start 
-
+### how to start
 
 1. clone this repo to your plugins
 2. bun install
 4. bun dev
 
-### Create a new rule 
+### Create a new rule
 
 1. add a new enum to `INCOMPLETE_ISSUE_TYPE`
 2. also add to `settingSchemas.ts`
@@ -63,21 +61,21 @@ Waiting for obsidian team approval: https://github.com/obsidianmd/obsidian-relea
 
 ```ts
 export const issueScanners = [
-	checkEmptyContent,
-	checkEmptyContentHeading,
-	checkIncompleteSyntax,
+ checkEmptyContent,
+ checkEmptyContentHeading,
+ checkIncompleteSyntax,
 ];
 
 // this is the interface you can refer to 
 export type IssueScanner = {
-	issueType: INCOMPLETE_ISSUE_TYPE;
-	func: ScanFunction;
-	icon: string;
-	setting: {
-		name: string;
-		description: string;
-		default: boolean;
-	};
+ issueType: INCOMPLETE_ISSUE_TYPE;
+ func: ScanFunction;
+ icon: string;
+ setting: {
+  name: string;
+  description: string;
+  default: boolean;
+ };
 };
 ```
 

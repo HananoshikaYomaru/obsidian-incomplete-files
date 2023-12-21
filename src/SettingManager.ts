@@ -116,4 +116,5 @@ export const DEFAULT_SETTING: Setting = {
 	ignoreFoldersString: "",
 	incompleteFiles: [],
 	completeProperty: "",
+	analyseFileWhenEditing: false,
 };
